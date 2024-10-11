@@ -16,7 +16,6 @@ const pool = new Pool({
 pool
   .connect()
   .then((client) => {
-    console.log("PostgreSQL connection successful.");
     client.release(); // Release the client back to the pool
   })
   .catch((err) => {

@@ -14,7 +14,7 @@
       </div>
     </NuxtLinkLocale>
 
-    <div class="flex items-center gap-5">
+    <div class="flex items-center gap-5 justify-center">
       <UIcon size="30" name="i-ph:user" class="mr-2" />
       <DarkModeSwitcher />
     </div>
@@ -46,11 +46,6 @@ const fetchLogoData = async () => {
       // Store logos in localStorage for future access
       localStorage.setItem("blackLogo", blackLogo.value);
       localStorage.setItem("lightLogo", lightLogo.value);
-
-      console.log("Fetched and stored logos:", {
-        blackLogo: blackLogo.value,
-        lightLogo: lightLogo.value,
-      });
     } else {
       console.warn("Logo data not successful or empty:", logoData);
     }
@@ -67,10 +62,6 @@ onMounted(() => {
   if (storedBlackLogo && storedLightLogo) {
     blackLogo.value = storedBlackLogo;
     lightLogo.value = storedLightLogo;
-    console.log("Loaded logos from localStorage:", {
-      blackLogo: blackLogo.value,
-      lightLogo: lightLogo.value,
-    });
   } else {
     fetchLogoData();
   }

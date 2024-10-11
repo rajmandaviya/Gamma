@@ -46,7 +46,7 @@
           class="flex flex-col gap-4 justify-center items-center md:items-start md:w-1/3"
         >
           <NuxtLinkLocale to="/">
-            <div class="h-12 w-[150px] ml-5">
+            <div class="h-12 w-[150px]">
               <img
                 v-if="currentLogo"
                 :src="currentLogo"
@@ -266,7 +266,6 @@ async function submitForm() {
     const data = await response.json();
 
     if (data.success) {
-      console.log("Email added successfully");
       email.value = "";
     } else {
       console.error("Failed to add email:", data.error);

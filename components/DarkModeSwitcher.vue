@@ -6,7 +6,7 @@
       <button
         v-if="$colorMode.preference === 'light'"
         @click="toggleDropdown"
-        class="focus:outline-none"
+        class="focus:outline-none justify-center items-center flex"
       >
         <UIcon name="i-ph:sun" class="bg-accent" size="30" />
       </button>
@@ -24,7 +24,7 @@
       <button
         v-if="$colorMode.preference === 'system'"
         @click="toggleDropdown"
-        class="focus:outline-none"
+        class="focus:outline-none justify-center items-center flex"
       >
         <UIcon
           :name="isSystemDark ? 'i-ph:moon' : 'i-ph:sun'"
@@ -32,27 +32,18 @@
           size="30"
         />
       </button>
-
-      <!-- Sepia icon for sepia mode -->
-      <button
-        v-if="$colorMode.preference === 'sepia'"
-        @click="toggleDropdown"
-        class="focus:outline-none"
-      >
-        <UIcon name="i-ph:exclude-square-light" class="bg-accent" size="30" />
-      </button>
     </div>
 
     <!-- Dropdown for selecting color mode -->
     <div
       v-if="showDropdown"
-      class="absolute top-12 z-10 w-32 bg-white border border-gray-300 rounded-md shadow-md dark:bg-charade-900 dark:text-white overflow-hidden right-1"
+      class="absolute top-11 z-10 w-28 bg-white border border-gray-300 dark:border-gray-500 rounded-md shadow-md dark:bg-charade-900 dark:text-white overflow-hidden right-2"
     >
       <ul>
         <li>
           <button
             @click="selectMode('system')"
-            class="block w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600"
+            class="block w-full px-4 py-1 text-left hover:bg-gray-100 dark:hover:bg-gray-600"
           >
             System
           </button>
@@ -60,7 +51,7 @@
         <li>
           <button
             @click="selectMode('light')"
-            class="block w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600"
+            class="block w-full px-4 py-1 text-left hover:bg-gray-100 dark:hover:bg-gray-600"
           >
             Light
           </button>
@@ -68,17 +59,9 @@
         <li>
           <button
             @click="selectMode('dark')"
-            class="block w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600"
+            class="block w-full px-4 py-1 text-left hover:bg-gray-100 dark:hover:bg-gray-600"
           >
             Dark
-          </button>
-        </li>
-        <li>
-          <button
-            @click="selectMode('sepia')"
-            class="block w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600"
-          >
-            Sepia
           </button>
         </li>
       </ul>
@@ -132,11 +115,3 @@ onMounted(() => {
   }
 });
 </script>
-
-<style scoped>
-/* Styling for sepia mode */
-body.sepia-mode {
-  background-color: #f1e7d0;
-  color: #433422;
-}
-</style>

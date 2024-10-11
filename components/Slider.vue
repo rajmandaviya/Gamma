@@ -1,11 +1,28 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
-import { useRoute } from "vue-router"; // Import to detect the current route
+import { useRoute } from "vue-router";
 import { useAsyncData } from "#imports";
+import { Carousel, Navigation, Pagination, Slide } from "vue3-carousel";
+import "vue3-carousel/dist/carousel.css";
 
-const items = ref([]); // Array to store slider images
-const carouselRef = ref();
+const items = ref([]); // Store slider images
 const route = useRoute(); // Access the current route
+
+// Carousel settings and breakpoints
+const settings = {
+  itemsToShow: 1,
+  snapAlign: "center",
+};
+const breakpoints = {
+  700: {
+    itemsToShow: 3.5,
+    snapAlign: "center",
+  },
+  1024: {
+    itemsToShow: 5,
+    snapAlign: "start",
+  },
+};
 
 // Function to display appropriate slider based on locale
 const displaySliders = (sliderData, locale) => {
@@ -19,16 +36,12 @@ const displaySliders = (sliderData, locale) => {
 
 // Fetch all sliders and display the appropriate one based on locale
 const fetchSliders = async () => {
-  // Fetch all sliders in one call
   const { data, error } = await useAsyncData("marketingDesign", () =>
     $fetch(`/api/marketingDesign`)
   );
 
   if (data?.value && data.value.success) {
-    // Determine initial locale from the path
     const locale = route.fullPath.includes("/ru") ? "ru" : "ro";
-
-    // Display appropriate sliders based on the detected locale
     displaySliders(data.value.data, locale);
   } else {
     console.error(
@@ -38,50 +51,47 @@ const fetchSliders = async () => {
   }
 };
 
-// Watch for locale changes in the URL and display the appropriate sliders
+// Watch for locale changes in the URL
 watch(
-  () => route.fullPath, // Watch for changes in the full path (which includes the locale)
+  () => route.fullPath,
   (newPath) => {
-    const locale = newPath.includes("/ru") ? "ru" : "ro"; // Determine locale from the path
-    // Refetch or update displayed sliders on route change
+    const locale = newPath.includes("/ru") ? "ru" : "ro";
     fetchSliders();
   },
-  { immediate: true } // Fetch immediately on page load
+  { immediate: true }
 );
 
 onMounted(() => {
-  // Start by fetching the slider data and display based on the locale
   fetchSliders();
-
-  // Setup auto-sliding every 5 seconds
-  setInterval(() => {
-    if (!carouselRef.value) return;
-
-    if (carouselRef.value.page === carouselRef.value.pages) {
-      return carouselRef.value.select(0);
-    }
-
-    carouselRef.value.next();
-  }, 5000);
 });
 </script>
 
 <template>
-  <div>
-    <!-- Carousel when data is loaded -->
-    <UCarousel
-      ref="carouselRef"
-      v-slot="{ item }"
-      :items="items"
-      :ui="{ item: 'basis-full' }"
-      class="rounded-lg overflow-hidden cursor-grab w-full h-[250px] md:h-[350px] lg:h-[515px]"
-      indicators
-    >
+  <Carousel v-bind="settings" :breakpoints="breakpoints">
+    <!-- Display each image as a slide -->
+    <Slide v-for="(item, index) in items" :key="index">
       <img
         :src="item"
-        class="h-[250px] md:h-[350px] lg:h-[515px] w-full object-cover"
+        class="w-full h-[250px] md:h-[350px] lg:h-[515px] object-cover"
         draggable="false"
       />
-    </UCarousel>
-  </div>
+    </Slide>
+
+    <!-- Addons for navigation and pagination -->
+    <template #addons>
+      <Navigation />
+      <Pagination />
+    </template>
+  </Carousel>
 </template>
+
+<style scoped>
+li.carousel__slide.carousel__slide--visible.carousel__slide--active {
+  border-radius: 15px;
+  overflow: hidden;
+  width: 100% !important;
+}
+ol.carousel__pagination {
+  display: none !important;
+}
+</style>

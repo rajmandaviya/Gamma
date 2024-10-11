@@ -59,9 +59,7 @@ const product = ref({
   discount: 170,
 });
 
-const addToCart = (product) => {
-  console.log("Product added to cart:", product);
-};
+const addToCart = (product) => {};
 
 const isFiftyPercentOff = computed(() => {
   const originalPrice = parseFloat(product.value.price);

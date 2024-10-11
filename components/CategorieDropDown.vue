@@ -12,37 +12,58 @@
     </button>
 
     <!-- Dropdown menu with transition -->
-    <div
-      v-if="isDropdownOpen"
-      class="dropdown-menu absolute flex dark:bg-charade-950 border-t-0 bg-white border rounded-b-xl border-accent dark:border-accentz-10 overflow-hidden z-10"
-      :style="{ height: `${dropdownHeight}px`, opacity: dropdownOpacity }"
-    >
-      <ul class="categories w-[313px]">
-        <!-- Iterate over all categories -->
-        <li
-          v-for="category in categories"
-          :key="category.id"
-          class="px-4 py-[6px] cursor-pointer dark:hover:bg-gray-500 hover:bg-gray-100 flex items-center justify-between relative"
-        >
-          <NuxtLink
-            :to="
-              localePath({
-                name: 'categoria-id',
-                params: { id: createSlug(category) }, // Use only Nume_Categorie_RO to create the slug
-              })
-            "
-            class="flex justify-between w-full"
-            active-class="hovered-accent"
+    <transition name="fade">
+      <div
+        v-if="isDropdownOpen"
+        class="dropdown-menu absolute flex dark:bg-charade-950 bg-white border rounded-b-xl border-accent dark:border-accentz-10 overflow-hidden z-10"
+        :style="{
+          width: hoveredCategoryId ? '90vw' : '315px',
+          maxWidth: hoveredCategoryId ? '1250px' : '315px',
+          height: `${dropdownHeight}px`,
+          opacity: dropdownOpacity,
+        }"
+        @mouseleave="hoveredCategoryId = null"
+      >
+        <ul class="categories w-[314px]">
+          <!-- Iterate over all categories -->
+          <li
+            v-for="category in categories"
+            :key="category.id"
+            class="px-4 py-[6px] cursor-pointer dark:hover:bg-[#4A4B59] hover:bg-gray-100 flex items-center justify-between relative"
+            @mouseenter="hoveredCategoryId = category.id"
           >
-            <div class="flex items-center">
-              <UIcon :name="`i-ph:${category.Icons}`" size="23" class="mr-4" />
-              {{ getCategoryName(category) }}
-            </div>
-            <UIcon name="i-ph:caret-right" class="ml-2" size="20" />
-          </NuxtLink>
-        </li>
-      </ul>
-    </div>
+            <NuxtLink
+              :to="
+                localePath({
+                  name: 'categoria-id',
+                  params: { id: createSlug(category) }, // Use only Nume_Categorie_RO to create the slug
+                })
+              "
+              class="flex justify-between w-full"
+              active-class="hovered-accent"
+            >
+              <div class="flex items-center">
+                <UIcon
+                  :name="`i-ph:${category.Icons}`"
+                  size="23"
+                  class="mr-4"
+                />
+                {{ getCategoryName(category) }}
+              </div>
+              <UIcon name="i-ph:caret-right" class="ml-2" size="20" />
+            </NuxtLink>
+          </li>
+        </ul>
+        <!-- Pass the hovered category ID to SubCategoriesDropdown -->
+        <SubcategoriesDropdown
+          :categoryId="hoveredCategoryId"
+          :categorySlug="
+            hoveredCategoryId ? createSlug(getHoveredCategory()) : ''
+          "
+          class="w-[calc(100%-314px)]"
+        />
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -61,6 +82,7 @@ const dropdownHeight = ref(0);
 const dropdownOpacity = ref(0); // To handle smooth opacity transitions
 const route = useRoute();
 const router = useRouter();
+const hoveredCategoryId = ref(null);
 
 // Function to fetch categories immediately during load
 const fetchCategories = async () => {
@@ -76,6 +98,11 @@ const fetchCategories = async () => {
   }
 };
 
+const getHoveredCategory = () => {
+  return categories.value.find(
+    (category) => category.id === hoveredCategoryId.value
+  );
+};
 // Function to calculate the height of the dropdown
 const calculateDropdownHeight = () => {
   const dropdownMenu = document.querySelector(".categories");
@@ -91,9 +118,7 @@ const toggleDropdown = () => {
     if (isDropdownOpen.value) {
       dropdownHeight.value = 0;
       dropdownOpacity.value = 0;
-      setTimeout(() => {
-        isDropdownOpen.value = false;
-      }, 300); // Delay to allow the animation to complete
+      isDropdownOpen.value = false; // Immediate close
     } else {
       isDropdownOpen.value = true;
       nextTick(() => {
@@ -152,9 +177,10 @@ watch(
       });
     } else {
       isHomePage.value = false;
-      isDropdownOpen.value = false; // Close dropdown when leaving homepage
-      dropdownHeight.value = 0;
-      dropdownOpacity.value = 0;
+      // Close dropdown immediately without transition on route change
+      dropdownHeight.value = 0; // Reset height immediately
+      dropdownOpacity.value = 0; // Reset opacity immediately
+      isDropdownOpen.value = false; // Close without animation
     }
   }
 );
@@ -177,9 +203,8 @@ const createSlug = (category) => {
 </script>
 
 <style scoped>
+/* Ensure there is no transition during route changes */
 .dropdown-menu {
-  transition: height 0.3s ease, opacity 0.3s ease; /* Smooth transition */
-  height: 0;
-  opacity: 0;
+  transition: none !important; /* Disable all transitions */
 }
 </style>

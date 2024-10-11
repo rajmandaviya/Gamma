@@ -2,15 +2,16 @@ import { config } from "dotenv";
 config();
 export default defineNuxtConfig({
   modules: ["@nuxtjs/i18n", "@nuxt/ui", "@pinia/nuxt", "@nuxtjs/color-mode"],
+
   colorMode: {
-    preference: "system", // default value of $colorMode.preference
-    fallback: "", // fallback value if not system preference found
+    preference: "system",
+    fallback: "",
     hid: "nuxt-color-mode-script",
     globalName: "__NUXT_COLOR_MODE__",
     componentName: "ColorScheme",
     classPrefix: "",
     classSuffix: "-mode",
-    storage: "localStorage", // or 'sessionStorage' or 'cookie'
+    storage: "localStorage",
     storageKey: "nuxt-color-mode",
   },
 

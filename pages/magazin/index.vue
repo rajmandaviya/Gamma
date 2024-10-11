@@ -1,12 +1,8 @@
 <template>
-  <div>
-    <!-- <CategoryList /> -->
-  </div>
+  <div></div>
 </template>
 
-<script setup>
-// Your script setup code here
-</script>
+<script setup></script>
 
 <style scoped>
 /* Your styles here */

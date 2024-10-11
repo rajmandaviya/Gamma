@@ -27,6 +27,5 @@ const isModalVisible = ref(false);
 
 function toggleModal() {
   isModalVisible.value = !isModalVisible.value;
-  console.log("Modal visibility toggled:", isModalVisible.value);
 }
 </script>

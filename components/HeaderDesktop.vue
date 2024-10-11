@@ -13,7 +13,7 @@
       <div class="flex items-center">
         <Cart class="mr-4" />
         <UIcon size="26" name="i-ph:user" class="mr-3 text-white" />
-        <NuxtLinkLocale to="/wishlist">
+        <NuxtLinkLocale to="/wishlist" class="flex items-center justify-center">
           <UIcon size="26" name="i-ph:heart-straight" class="mr-5 text-white" />
         </NuxtLinkLocale>
         <DarkModeSwitcher class="mr-4" />
