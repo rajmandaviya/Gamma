@@ -1,0 +1,13 @@
+<template>
+  <div>
+    <!-- <CategoryList /> -->
+  </div>
+</template>
+
+<script setup>
+// Your script setup code here
+</script>
+
+<style scoped>
+/* Your styles here */
+</style>
