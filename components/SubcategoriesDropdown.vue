@@ -9,7 +9,7 @@
       <div
         v-for="subcategory in subcategories"
         :key="subcategory.id"
-        class="break-inside-avoid p-3 bg-white dark:bg-[#3A3B4A] shadow-lg rounded-lg mb-4"
+        class="break-inside-avoid p-3 bg-white dark:bg-[#3A3B4A] shadow-sm rounded-md mb-4"
       >
         <!-- Subcategory Title -->
         <h3 class="text-xl font-semibold">
