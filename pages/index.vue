@@ -4,13 +4,13 @@ import { ref, onMounted } from "vue";
 
 const { t, locale } = useI18n();
 const banner3Url = ref(null);
+const loading = ref(true); // Add loading state
 
 async function fetchBanner3() {
   try {
     const response = await fetch("/api/marketingDesign");
     const data = await response.json();
     if (data.success && data.data.length > 0) {
-      // Determine which banner to use based on the locale
       if (locale.value === "ro") {
         banner3Url.value = data.data[0].Banner3_RO_[0];
       } else if (locale.value === "ru") {
@@ -19,6 +19,8 @@ async function fetchBanner3() {
     }
   } catch (error) {
     console.error("Error fetching Banner3 data:", error);
+  } finally {
+    loading.value = false;
   }
 }
 

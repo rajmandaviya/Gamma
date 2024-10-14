@@ -29,7 +29,12 @@
           <li
             v-for="category in categories"
             :key="category.id"
-            class="px-4 py-[6px] cursor-pointer dark:hover:bg-[#4A4B59] hover:bg-gray-100 flex items-center justify-between relative"
+            :class="{
+              'bg-hovered-category': hoveredCategoryId === category.id, // Custom class for hovered category
+              'dark:hover:bg-[#4A4B59] hover:bg-gray-100':
+                hoveredCategoryId !== category.id,
+            }"
+            class="px-4 py-[6px] cursor-pointer flex items-center justify-between relative"
             @mouseenter="hoveredCategoryId = category.id"
           >
             <NuxtLink
@@ -206,5 +211,12 @@ const createSlug = (category) => {
 /* Ensure there is no transition during route changes */
 .dropdown-menu {
   transition: none !important; /* Disable all transitions */
+}
+.bg-hovered-category {
+  background-color: #f0f0f0; /* Change to your desired hover color */
+}
+
+.dark .bg-hovered-category {
+  background-color: #4a4b59; /* Dark mode hover background */
 }
 </style>

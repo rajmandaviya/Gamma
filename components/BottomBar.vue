@@ -33,6 +33,7 @@
           name="i-ph:magnifying-glass"
           class="text-white"
           @click="toggleModal"
+          ca
         />
         <!-- Search Modal -->
         <SearchModal :isOpen="isModalVisible" :onClose="toggleModal" />

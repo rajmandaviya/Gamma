@@ -15,7 +15,7 @@
       <button
         v-if="$colorMode.preference === 'dark'"
         @click="toggleDropdown"
-        class="focus:outline-none bg-accent p-1 rounded-full justify-center items-center h-[40px] w-[40px]"
+        class="focus:outline-none bg-accent p-1 rounded-full h-[38px] w-[38px]"
       >
         <UIcon name="i-ph:moon" class="bg-white" size="30" />
       </button>
@@ -37,7 +37,7 @@
     <!-- Dropdown for selecting color mode -->
     <div
       v-if="showDropdown"
-      class="absolute top-11 z-10 w-28 bg-white border border-gray-300 dark:border-gray-500 rounded-md shadow-md dark:bg-charade-900 dark:text-white overflow-hidden right-2"
+      class="absolute top-11 z-10 w-28 bg-white border border-gray-300 dark:border-gray-700 rounded-md shadow-md dark:bg-charade-900 dark:text-white overflow-hidden right-2"
     >
       <ul>
         <li>

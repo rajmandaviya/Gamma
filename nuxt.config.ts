@@ -1,19 +1,14 @@
 import { config } from "dotenv";
 config();
-export default defineNuxtConfig({
-  modules: ["@nuxtjs/i18n", "@nuxt/ui", "@pinia/nuxt", "@nuxtjs/color-mode"],
 
-  colorMode: {
-    preference: "system",
-    fallback: "",
-    hid: "nuxt-color-mode-script",
-    globalName: "__NUXT_COLOR_MODE__",
-    componentName: "ColorScheme",
-    classPrefix: "",
-    classSuffix: "-mode",
-    storage: "localStorage",
-    storageKey: "nuxt-color-mode",
-  },
+export default defineNuxtConfig({
+  modules: [
+    "@nuxtjs/i18n",
+    "@nuxt/ui",
+    "@pinia/nuxt",
+    "@nuxtjs/color-mode",
+    "nuxt-auth-utils",
+  ],
 
   i18n: {
     locales: ["ro", "ru"],
@@ -34,6 +29,16 @@ export default defineNuxtConfig({
     apiToken: process.env.NUXT_API_TOKEN,
     public: {
       baseURL: process.env.NUXT_BASE_URL,
+    },
+    oauth: {
+      google: {
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      },
+      facebook: {
+        clientId: process.env.FACEBOOK_CLIENT_ID,
+        clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+      },
     },
   },
 

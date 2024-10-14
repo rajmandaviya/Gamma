@@ -1,9 +1,7 @@
-// server/api/newsletter.js
-import client from "~/server/db"; // Import the connected db client
+import pool from "~/server/db";
 
 export default defineEventHandler(async (event) => {
   try {
-    // Parse the request body to get the email
     const body = await readBody(event);
     const email = body.email;
 
@@ -14,12 +12,11 @@ export default defineEventHandler(async (event) => {
       };
     }
 
-    // Insert email into the database
     const query = `
       INSERT INTO public."nc_ssxn___Emailuri" ("Emailuri")
       VALUES ($1);
     `;
-    await client.query(query, [email]);
+    await pool.query(query, [email]);
 
     return {
       success: true,

@@ -1,51 +1,54 @@
 <template>
   <div class="flex">
-    <!-- Subcategories Section -->
-    <div
-      v-if="subcategories"
-      class="columns-3 gap-4 p-2 w-[80%] overflow-y-auto"
-    >
-      <!-- Individual Subcategory Blocks -->
+    <div class="flex-1 p-2 overflow-hidden">
       <div
-        v-for="subcategory in subcategories"
-        :key="subcategory.id"
-        class="break-inside-avoid p-3 bg-white dark:bg-[#3A3B4A] shadow-sm rounded-md mb-4"
+        v-if="subcategories"
+        class="grid grid-cols-3 auto-rows-auto gap-4 h-full overflow-y-auto"
       >
-        <!-- Subcategory Title -->
-        <h3 class="text-xl font-semibold">
-          <NuxtLink
-            :to="generateSubcategoryLink(subcategory)"
-            class="cursor-pointer hover:text-accent"
-          >
-            {{ getSubcategoryName(subcategory) }}
-          </NuxtLink>
-        </h3>
-
-        <!-- Subsubcategories List -->
-        <ul>
-          <li
-            v-for="subsub in subcategory.subSubcategories"
-            :key="subsub.id"
-            class="text-gray-600 text-base dark:text-gray-300 my-1"
-          >
+        <div
+          v-for="subcategory in subcategories"
+          :key="subcategory.id"
+          class="p-3 bg-gray-100 dark:bg-[#3A3B4A] rounded-md mb-4"
+        >
+          <h3 class="text-xl font-semibold">
             <NuxtLink
-              :to="generateSubsubcategoryLink(subcategory, subsub)"
+              :to="generateSubcategoryLink(subcategory)"
               class="cursor-pointer hover:text-accent"
             >
-              {{ getSubsubName(subsub) }}
+              {{ getSubcategoryName(subcategory) }}
             </NuxtLink>
-          </li>
-        </ul>
-      </div>
-    </div>
+          </h3>
 
-    <!-- Image Section -->
-    <div class="w-[20%] h-full">
-      <img
-        :src="`/categoryImages/${props.categorySlug}.webp`"
-        :alt="props.categorySlug"
-        class="h-full object-cover"
-      />
+          <div class="my-2">
+            <NuxtLink
+              :to="generateSubcategoryLink(subcategory)"
+              class="block w-full"
+            >
+              <img
+                v-if="subcategory.images && subcategory.images.length > 0"
+                :src="subcategory.images[0]"
+                :alt="getSubcategoryName(subcategory)"
+                class="w-full h-48 object-cover rounded-md hover:opacity-80 transition-opacity"
+              />
+            </NuxtLink>
+          </div>
+
+          <ul>
+            <li
+              v-for="subsub in subcategory.subSubcategories"
+              :key="subsub.id"
+              class="text-gray-600 text-base dark:text-gray-300 my-1"
+            >
+              <NuxtLink
+                :to="generateSubsubcategoryLink(subcategory, subsub)"
+                class="cursor-pointer hover:text-accent"
+              >
+                {{ getSubsubName(subsub) }}
+              </NuxtLink>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -72,7 +75,6 @@ const error = ref(null);
 const { locale } = useI18n();
 const router = useRouter();
 
-// Watch for categoryId changes and fetch subcategories
 watch(
   () => props.categoryId,
   async (newCategoryId) => {
@@ -116,12 +118,12 @@ const getSubsubName = (subsub) => {
 };
 
 const generateSubcategoryLink = (subcategory) => {
-  if (!props.categorySlug || !subcategory) return ""; // Ensure non-empty values
+  if (!props.categorySlug || !subcategory) return "";
   return `/categoria/${props.categorySlug}/${createSlug(subcategory)}`;
 };
 
 const generateSubsubcategoryLink = (subcategory, subsub) => {
-  if (!props.categorySlug || !subcategory || !subsub) return ""; // Ensure all values exist
+  if (!props.categorySlug || !subcategory || !subsub) return "";
   return `/categoria/${props.categorySlug}/${createSlug(
     subcategory
   )}/${createSlug(subsub, true)}`;
@@ -129,13 +131,20 @@ const generateSubsubcategoryLink = (subcategory, subsub) => {
 </script>
 
 <style scoped>
-.columns-3 {
-  column-count: 3;
-  column-gap: 1rem;
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)); /* 3 equal columns */
+  gap: 1rem;
 }
 
-.break-inside-avoid {
-  break-inside: avoid;
+.grid-item {
+  break-inside: avoid; /* Prevent content from breaking across columns */
+  align-self: start; /* Align items at the start of each column */
   margin-bottom: 1rem;
+}
+
+/* Ensure each row height adapts to the content */
+.auto-rows-auto {
+  grid-auto-rows: auto;
 }
 </style>

@@ -1,16 +1,14 @@
-// server/api/subcategories.js
-import client from "~/server/db"; // Import the connected db client
+import pool from "~/server/db";
 
-// In-memory cache object for subcategories
 let cache = {
-  subcategories: {}, // Cache for each category's subcategories
-  cacheTime: 0, // Timestamp to track when the cache was last set
+  subcategories: {},
+  cacheTime: 0,
 };
 
-const cacheDuration = 3600 * 1000; // Cache duration in milliseconds (1 hour)
+const cacheDuration = 3600 * 1000;
 
 export default defineEventHandler(async (event) => {
-  const { categoryId } = getQuery(event); // Extract categoryId from the query parameters
+  const { categoryId } = getQuery(event);
   const currentTime = Date.now();
 
   if (!categoryId) {
@@ -21,29 +19,23 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    // Check if data for this category is cached and still valid
     if (
       cache.subcategories[categoryId] &&
       currentTime - cache.cacheTime < cacheDuration
     ) {
-      // If cached data exists and is still valid, return it
       return { success: true, data: cache.subcategories[categoryId] };
     }
 
-    // Query to get subcategories based on categoryId, selecting only needed fields
     const subcategoriesQuery = `
-      SELECT id, "Nume_SubCategorie_RO", "Nume__SubCategorie_RU", "nc_pka4___Categorii_id"
+      SELECT id, "Nume_SubCategorie_RO", "Nume__SubCategorie_RU", "nc_pka4___Categorii_id", "Images"
       FROM public."nc_pka4___SubCategorii"
       WHERE "nc_pka4___Categorii_id" = $1
       ORDER BY id ASC;
     `;
 
-    const subcategoriesRes = await client.query(subcategoriesQuery, [
-      categoryId,
-    ]);
+    const subcategoriesRes = await pool.query(subcategoriesQuery, [categoryId]);
     const subcategories = subcategoriesRes.rows;
 
-    // Fetch sub-subcategories for each subcategory, selecting only needed fields
     const subcategoryIds = subcategories.map((sub) => sub.id);
 
     const subSubcategoriesQuery = `
@@ -53,21 +45,36 @@ export default defineEventHandler(async (event) => {
       ORDER BY id ASC;
     `;
 
-    const subSubcategoriesRes = await client.query(subSubcategoriesQuery, [
+    const subSubcategoriesRes = await pool.query(subSubcategoriesQuery, [
       subcategoryIds,
     ]);
     const subSubcategories = subSubcategoriesRes.rows;
 
-    // Organize sub-subcategories by subcategory
+    const baseUrl = process.env.NUXT_BASE_URL;
+
     const formattedData = subcategories.map((subcategory) => {
       const filteredSubSubcategories = subSubcategories.filter(
         (subSub) => subSub.nc_pka4___SubCategorii_id === subcategory.id
       );
 
+      let images = [];
+      if (subcategory.Images) {
+        try {
+          const parsedImages = JSON.parse(subcategory.Images);
+          images = parsedImages.map((img) => `${baseUrl}/${img.path}`);
+        } catch (e) {
+          console.error(
+            "Failed to parse images for subcategory ID",
+            subcategory.id
+          );
+        }
+      }
+
       return {
         id: subcategory.id,
         subcategory_name_ro: subcategory.Nume_SubCategorie_RO,
         subcategory_name_ru: subcategory.Nume__SubCategorie_RU,
+        images,
         subSubcategories: filteredSubSubcategories.map((subSub) => ({
           id: subSub.id,
           subsub_name_ro: subSub.Nume_SubSubCategorie_RO,
@@ -76,11 +83,9 @@ export default defineEventHandler(async (event) => {
       };
     });
 
-    // Cache the result for this category and set the cache time
     cache.subcategories[categoryId] = formattedData;
     cache.cacheTime = currentTime;
 
-    // Return the formatted data
     return { success: true, data: formattedData };
   } catch (error) {
     console.error(
@@ -89,7 +94,6 @@ export default defineEventHandler(async (event) => {
     );
     console.error("Full error details:", error.stack);
 
-    // Return the error message in the response to help debug
     return {
       success: false,
       error:
