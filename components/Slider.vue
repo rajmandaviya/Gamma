@@ -11,6 +11,7 @@ interface SliderData {
 
 // Store slider images
 const items = ref<string[]>([]); // Holds the images to display in the carousel
+const loading = ref(true); // Add loading state
 
 const route = useRoute(); // Get the current route
 
@@ -22,10 +23,12 @@ const displaySliders = (sliderData: SliderData[], locale: string) => {
   } else {
     items.value = slider.Bannere_Slider_RO_; // Set RO slider images
   }
+  loading.value = false; // Set loading to false after images are loaded
 };
 
 // Fetch all sliders and render the correct one based on locale
 const fetchSliders = async () => {
+  loading.value = true; // Set loading to true before fetching
   const { data, error } = await useAsyncData("marketingDesign", () =>
     $fetch(`/api/marketingDesign`)
   );
@@ -38,6 +41,7 @@ const fetchSliders = async () => {
       "Error fetching sliders:",
       error?.value || "No sliders available"
     );
+    loading.value = false; // Set loading to false if there's an error
   }
 };
 
@@ -57,7 +61,12 @@ onMounted(() => {
 </script>
 
 <template>
+  <USkeleton
+    v-if="loading"
+    class="h-[250px] md:h-[350px] lg:h-[515px] rounded-lg"
+  />
   <UCarousel
+    v-else
     v-slot="{ item }"
     :items="items"
     :ui="{ item: 'basis-full' }"

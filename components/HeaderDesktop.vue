@@ -24,7 +24,7 @@
         />
 
         <!-- AuthModal with absolute positioning relative to the user icon -->
-        <AuthModal v-if="showModal" class="absolute right-0 top-[100%] mt-6" />
+        <AuthModal v-if="showModal" class="absolute right-0 top-[100%] mt-7" />
 
         <NuxtLinkLocale to="/wishlist" class="flex items-center justify-center">
           <UIcon size="26" name="i-ph:heart-straight" class="mr-5 text-white" />
@@ -36,7 +36,8 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
+import { useRouter } from "vue-router"; // Import useRouter
 
 const showModal = ref(false);
 
@@ -59,8 +60,10 @@ if (logoData.value?.success && logoData.value.data?.length) {
 if (error.value) {
   console.error("Error fetching logo:", error.value);
 }
-</script>
 
-<style scoped>
-/* Adjust modal positioning relative to the user icon */
-</style>
+// Hide modal on route change
+const router = useRouter();
+watch(router.currentRoute, () => {
+  showModal.value = false; // Reset the modal visibility when route changes
+});
+</script>

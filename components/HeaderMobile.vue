@@ -15,7 +15,13 @@
     </NuxtLinkLocale>
 
     <div class="flex items-center gap-5 justify-center">
-      <UIcon size="30" name="i-ph:user" class="mr-2" />
+      <UIcon
+        size="30"
+        name="i-ph:user"
+        class="mr-2"
+        @click="showModal = !showModal"
+      />
+      <AuthModal v-if="showModal" class="absolute right-4 top-[80%] mt-7" />
       <DarkModeSwitcher />
     </div>
   </div>
@@ -31,6 +37,11 @@ const colorMode = useColorMode();
 const blackLogo = ref(null);
 const lightLogo = ref(null);
 
+const showModal = ref(false);
+const router = useRouter();
+watch(router.currentRoute, () => {
+  showModal.value = false; // Reset the modal visibility when route changes
+});
 // Function to fetch logo data from an API
 const fetchLogoData = async () => {
   try {

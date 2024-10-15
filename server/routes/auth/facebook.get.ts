@@ -12,23 +12,23 @@ export default defineOAuthFacebookEventHandler({
 
     const profileImage = picture?.data?.url || null;
 
-    // Retrieve the redirectUrl from cookies
-    const cookies = event.req.headers.cookie;
-    const redirectUrl = cookies
-      ? cookies
-          .split("; ")
-          .find((row) => row.startsWith("redirectUrl="))
-          ?.split("=")[1] || "/"
-      : "/";
-
-    // Check if the user exists in the database by Facebook ID or Email
     let existingUser = await pool.query(
-      'SELECT * FROM "nc_pka4___Utilizatori" WHERE "Facebook_id" = $1 OR "Email" = $2',
-      [facebookId, email]
+      'SELECT * FROM "nc_pka4___Utilizatori" WHERE "Email" = $1',
+      [email]
     );
 
+    if (
+      existingUser.rows.length > 0 &&
+      existingUser.rows[0].Provider !== "facebook"
+    ) {
+      event.res.writeHead(200, { "Content-Type": "text/html" });
+      event.res.end(
+        `<script>window.opener.postMessage({ status: "error", message: "auth.email_already_registered_with_other_provider" }, "*"); window.close();</script>`
+      );
+      return;
+    }
+
     if (existingUser.rows.length === 0) {
-      // Create a new user if they do not exist
       const newUser = await pool.query(
         `INSERT INTO "nc_pka4___Utilizatori" ("Nume", "Prenume", "Email", "Facebook_id", "Provider", "Is_verified", "Profile_Image")
         VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
@@ -37,39 +37,28 @@ export default defineOAuthFacebookEventHandler({
       existingUser = { rows: [newUser.rows[0]] };
     }
 
-    // Set the user session after successful login
     await setUserSession(event, {
       user: {
         id: existingUser.rows[0].id,
         facebookId: existingUser.rows[0].Facebook_id,
         email: existingUser.rows[0].Email,
+        firstName: existingUser.rows[0].Nume,
+        lastName: existingUser.rows[0].Prenume,
         provider: "facebook",
       },
       loggedInAt: new Date(),
     });
 
-    // Redirect back to the stored URL or homepage
-    return sendRedirect(event, decodeURIComponent(redirectUrl));
+    event.res.writeHead(200, { "Content-Type": "text/html" });
+    event.res.end(
+      `<script>window.opener.postMessage({ status: "success", message: "auth.facebook_login_successful" }, "*"); window.close();</script>`
+    );
   },
 
   onError(event, error) {
-    console.error("Facebook OAuth error:", error);
-
-    // Retrieve the redirectUrl from cookies
-    const cookies = event.req.headers.cookie;
-    const redirectUrl = cookies
-      ? cookies
-          .split("; ")
-          .find((row) => row.startsWith("redirectUrl="))
-          ?.split("=")[1] || "/"
-      : "/";
-
-    // Return an error message and redirect back
-    return sendRedirect(
-      event,
-      `${decodeURIComponent(
-        redirectUrl
-      )}?error=Facebook OAuth failed. Please try again.`
+    event.res.writeHead(200, { "Content-Type": "text/html" });
+    event.res.end(
+      `<script>window.opener.postMessage({ status: "error", message: "auth.facebook_login_failed" }, "*"); window.close();</script>`
     );
   },
 });

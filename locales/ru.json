@@ -58,5 +58,22 @@
   "Password": "Пароль",
   "Name": "Имя",
   "Phone Number": "Номер телефона",
-  "Full Name": "Полное имя"
+  "Full Name": "Полное имя",
+  "Nume si Prenume": "Имя и фамилия",
+  "Welcome": "Добро пожаловать",
+  "Dashboard": "Доска",
+  "auth": {
+    "user_not_found": "Пользователь не найден.",
+    "invalid_password": "Пароль неверный.",
+    "email_already_registered": "Этот email уже зарегистрирован.",
+    "missing_fields": "Все поля обязательны.",
+    "internal_error": "Внутренняя ошибка.",
+    "user_registered_successfully": "Пользователь успешно зарегистрирован.",
+    "login_successful": "Успешная авторизация.",
+    "email_already_registered_with_other_provider": "Этот email уже зарегистрирован с другим провайдером.",
+    "google_login_failed": "Ошибка при входе с Google.",
+    "google_login_successful": "Успешная авторизация с Google.",
+    "facebook_login_successful": "Успешная авторизация с Facebook.",
+    "facebook_login_failed": "Ошибка при входе с Facebook."
+  }
 }

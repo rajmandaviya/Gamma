@@ -10,20 +10,21 @@ export default defineOAuthGoogleEventHandler({
       sub: googleId,
     } = user;
 
-    // Retrieve the redirectUrl from cookies
-    const cookies = event.req.headers.cookie;
-    const redirectUrl = cookies
-      ? cookies
-          .split("; ")
-          .find((row) => row.startsWith("redirectUrl="))
-          ?.split("=")[1] || "/"
-      : "/";
-
-    // Check if the user exists in the database
     let existingUser = await pool.query(
-      'SELECT * FROM "nc_pka4___Utilizatori" WHERE "Google_id" = $1 OR "Email" = $2',
-      [googleId, email]
+      'SELECT * FROM "nc_pka4___Utilizatori" WHERE "Email" = $1',
+      [email]
     );
+
+    if (
+      existingUser.rows.length > 0 &&
+      existingUser.rows[0].Provider !== "google"
+    ) {
+      event.res.writeHead(200, { "Content-Type": "text/html" });
+      event.res.end(
+        `<script>window.opener.postMessage({ status: "error", message: "auth.email_already_registered_with_other_provider" }, "*"); window.close();</script>`
+      );
+      return;
+    }
 
     if (existingUser.rows.length === 0) {
       const newUser = await pool.query(
@@ -34,37 +35,29 @@ export default defineOAuthGoogleEventHandler({
       existingUser = { rows: [newUser.rows[0]] };
     }
 
-    // Set the user session after successful login
     await setUserSession(event, {
       user: {
         id: existingUser.rows[0].id,
         googleId: existingUser.rows[0].Google_id,
         email: existingUser.rows[0].Email,
+        firstName: existingUser.rows[0].Nume, // Assuming "Nume" is the first name
+        lastName: existingUser.rows[0].Prenume, // Assuming "Prenume" is the last name
         provider: "google",
+        profileImage: existingUser.rows[0].Profile_image,
       },
       loggedInAt: new Date(),
     });
 
-    // Redirect back to the stored URL or homepage
-    return sendRedirect(event, decodeURIComponent(redirectUrl));
+    event.res.writeHead(200, { "Content-Type": "text/html" });
+    event.res.end(
+      `<script>window.opener.postMessage({ status: "success", message: "auth.google_login_successful" }, "*"); window.close();</script>`
+    );
   },
 
   onError(event, error) {
-    console.error("Google OAuth error:", error);
-
-    const cookies = event.req.headers.cookie;
-    const redirectUrl = cookies
-      ? cookies
-          .split("; ")
-          .find((row) => row.startsWith("redirectUrl="))
-          ?.split("=")[1] || "/"
-      : "/";
-
-    return sendRedirect(
-      event,
-      `${decodeURIComponent(
-        redirectUrl
-      )}?error=Google OAuth failed. Please try again.`
+    event.res.writeHead(200, { "Content-Type": "text/html" });
+    event.res.end(
+      `<script>window.opener.postMessage({ status: "error", message: "auth.google_login_failed" }, "*"); window.close();</script>`
     );
   },
 });

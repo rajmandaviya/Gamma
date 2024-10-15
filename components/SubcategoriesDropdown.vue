@@ -25,7 +25,6 @@
               class="block w-full"
             >
               <img
-                v-if="subcategory.images && subcategory.images.length > 0"
                 :src="subcategory.images[0]"
                 :alt="getSubcategoryName(subcategory)"
                 class="w-full h-48 object-cover rounded-md hover:opacity-80 transition-opacity"

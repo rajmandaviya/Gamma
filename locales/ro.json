@@ -57,5 +57,22 @@
   "Phone Number": "Număr de telefon",
   "Password": "Parolă",
   "Name": "Nume",
-  "Full Name": "Nume complet"
+  "Full Name": "Nume complet",
+  "Nume si Prenume": "Nume și prenume",
+  "Welcome": "Bine ați venit",
+  "Dashboard": "Dashboard",
+  "auth": {
+    "user_not_found": "Utilizatorul nu a fost găsit.",
+    "invalid_password": "Parola este incorectă.",
+    "email_already_registered": "Acest email este deja înregistrat.",
+    "missing_fields": "Toate câmpurile sunt necesare.",
+    "internal_error": "Eroare internă.",
+    "user_registered_successfully": "Utilizatorul a fost înregistrat cu succes.",
+    "login_successful": "Logare cu succes.",
+    "email_already_registered_with_other_provider": "Acest email este deja înregistrat cu un alt provider.",
+    "google_login_failed": "Eroare la logare cu Google.",
+    "google_login_successful": "Logare cu succes cu Google.",
+    "facebook_login_successful": "Logare cu succes cu Facebook.",
+    "facebook_login_failed": "Eroare la logare cu Facebook."
+  }
 }

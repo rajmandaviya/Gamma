@@ -1,7 +1,11 @@
 export default defineAppConfig({
   ui: {
-    primary: "charade", // Set charade as the primary color
-    accent: "aquamarine", // Set aquamarine as the accent color
+    primary: "charade",
+    accent: "aquamarine",
+    skeleton: {
+      base: "animate-pulse",
+      background: "bg-gray-200 dark:bg-charade-800",
+    },
   },
 
   darkMode: "class",
