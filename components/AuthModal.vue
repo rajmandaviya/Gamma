@@ -97,6 +97,7 @@ const handleLogin = async (e) => {
 
     if (res.ok) {
       await sessionFetch();
+      loggedIn.value = true;
     } else {
       const errorData = await res.json();
 
