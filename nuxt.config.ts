@@ -9,7 +9,6 @@ export default defineNuxtConfig({
     "@nuxtjs/color-mode",
     "nuxt-auth-utils",
   ],
-
   i18n: {
     locales: ["ro", "ru"],
     defaultLocale: "ro",
@@ -26,6 +25,13 @@ export default defineNuxtConfig({
   compatibilityDate: "2024-10-03",
 
   runtimeConfig: {
+    session: {
+      maxAge: 60 * 60 * 24 * 7,
+      cookie: {
+        sameSite: "None",
+        secure: process.env.NODE_ENV === "production", // Secure cookies in production (requires HTTPS)
+      },
+    },
     apiToken: process.env.NUXT_API_TOKEN,
     public: {
       baseURL: process.env.NUXT_BASE_URL,

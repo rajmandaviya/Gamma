@@ -73,6 +73,10 @@
     "google_login_failed": "Eroare la logare cu Google.",
     "google_login_successful": "Logare cu succes cu Google.",
     "facebook_login_successful": "Logare cu succes cu Facebook.",
-    "facebook_login_failed": "Eroare la logare cu Facebook."
-  }
+    "facebook_login_failed": "Eroare la logare cu Facebook.",
+    "registered_with_another_provider": "Utilizatorul este înregistrat cu un alt provider (Google sau Facebook)."
+  },
+  "Pret obisnuit": "Pret obisnuit",
+  "Acasă": "Acasă",
+  "MDL": "MDL"
 }

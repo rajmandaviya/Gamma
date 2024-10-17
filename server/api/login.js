@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
 
     // Check if the user exists by email
     const userResult = await pool.query(
-      'SELECT "id", "Email" AS "email", "Password" AS "password", "Nume" AS "firstName", "Prenume" AS "lastName" FROM "nc_pka4___Utilizatori" WHERE "Email" = $1',
+      'SELECT "id", "Email" AS "email", "Password" AS "password", "Nume" AS "firstName", "Prenume" AS "lastName", "Provider" AS "provider" FROM "nc_pka4___Utilizatori" WHERE "Email" = $1',
       [email]
     );
 
@@ -24,6 +24,16 @@ export default defineEventHandler(async (event) => {
     }
 
     const user = userResult.rows[0];
+
+    // Check if user is registered with a different provider (Facebook or Google)
+    if (user.provider !== "email") {
+      throw createError({
+        statusCode: 400,
+        data: {
+          errorCode: "auth.registered_with_another_provider",
+        },
+      });
+    }
 
     // Check if password is valid
     const validPassword = await bcrypt.compare(password, user.password);
@@ -68,7 +78,7 @@ export default defineEventHandler(async (event) => {
       createError({
         statusCode: error.statusCode || 500,
         data: {
-          errorCode: error.data?.errorCode || "server.internal_error",
+          errorCode: error.data?.errorCode || "auth.internal_error",
         },
       })
     );

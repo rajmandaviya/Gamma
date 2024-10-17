@@ -158,10 +158,10 @@ console.log(user);
       class="w-56 flex border border-gray-300 dark:border-gray-700 rounded-lg p-4 bg-white dark:bg-charade-900 justify-center flex-col"
     >
       <div class="flex flex-col gap-2">
-        <h1 class="text-center text-2xl font-bold">
+        <h1 class="text-center text-xl font-bold">
           {{ t("Welcome") }}
         </h1>
-        <h2 class="text-center text-lf">
+        <h2 class="text-center text-base">
           {{ user.firstName }}
           {{ user.lastName }}
         </h2>

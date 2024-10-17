@@ -4,7 +4,7 @@ export default defineAppConfig({
     accent: "aquamarine",
     skeleton: {
       base: "animate-pulse",
-      background: "bg-gray-200 dark:bg-charade-800",
+      background: "bg-gray-200 dark:bg-charade-900",
     },
   },
 

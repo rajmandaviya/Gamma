@@ -74,6 +74,10 @@
     "google_login_failed": "Ошибка при входе с Google.",
     "google_login_successful": "Успешная авторизация с Google.",
     "facebook_login_successful": "Успешная авторизация с Facebook.",
-    "facebook_login_failed": "Ошибка при входе с Facebook."
-  }
+    "facebook_login_failed": "Ошибка при входе с Facebook.",
+    "registered_with_another_provider": "Пользователь зарегистрирован с другим провайдером (Google или Facebook)."
+  },
+  "Pret obisnuit": "Обычная цена",
+  "Acasă": "Главная",
+  "MDL": "МДЛ"
 }

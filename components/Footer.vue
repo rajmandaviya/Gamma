@@ -69,7 +69,7 @@
             >
               <UIcon name="i-ph:phone-call" class="text-white" size="30" />
             </div>
-            <p class="text-gray-500">+40 723 456 789</p>
+            <p class="text-gray-500">079867092</p>
           </a>
           <a href="mailto:support@gamma.md" class="flex items-center gap-2">
             <div
@@ -77,7 +77,7 @@
             >
               <UIcon name="i-ph:envelope" class="text-white" size="30" />
             </div>
-            <p class="text-gray-500">support@gamma.md</p>
+            <p class="text-gray-500">info@gamma.md</p>
           </a>
           <a
             href="https://www.google.com/maps/search/?api=1&query=Strada+Sfîntul+Gheorghe+6,+Chișinău,+Moldova"
