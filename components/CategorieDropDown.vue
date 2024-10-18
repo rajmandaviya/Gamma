@@ -199,11 +199,15 @@ const getCategoryName = (category) => {
 
 // Use the `slugify` package to create a slug for the URL using only Nume_Categorie_RO
 const createSlug = (category) => {
-  return slugify(category.Nume_Categorie_RO, {
-    replacement: "-", // Replace spaces with hyphens
-    lower: true, // Convert the text to lowercase
-    strict: true, // Remove special characters
-  }).toLowerCase(); // Force everything to be lowercase
+  return (
+    slugify(category.Nume_Categorie_RO, {
+      replacement: "-", // Replace spaces with hyphens
+      lower: true, // Convert the text to lowercase
+      strict: true, // Remove special characters
+    }).toLowerCase() +
+    "_" +
+    category.id
+  ); // Force everything to be lowercase
 };
 </script>
 

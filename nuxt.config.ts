@@ -28,8 +28,8 @@ export default defineNuxtConfig({
     session: {
       maxAge: 60 * 60 * 24 * 7,
       cookie: {
-        sameSite: "None",
-        secure: process.env.NODE_ENV === "production", // Secure cookies in production (requires HTTPS)
+        sameSite: "Lax",
+        secure: process.env.NODE_ENV === "production",
       },
     },
     apiToken: process.env.NUXT_API_TOKEN,
