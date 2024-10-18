@@ -9,7 +9,7 @@
           <UIcon name="i-ph:newspaper-light" class="text-white" size="55" />
           <div class="text-center md:text-left">
             <h2 class="text-xl font-bold text-white">
-              {{ t("Obțineți 10% reducere") }}
+              {{ t("Obțineți 5% reducere") }}
             </h2>
             <p class="text-gray-500">
               {{
