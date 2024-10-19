@@ -4,7 +4,7 @@ import { ref, onMounted } from "vue";
 
 const { t, locale } = useI18n();
 const banner3Url = ref(null);
-const loading = ref(true); // Add loading state
+const loading = ref(true);
 
 async function fetchBanner3() {
   try {
@@ -46,7 +46,7 @@ onMounted(() => {
         :src="banner3Url"
         alt="Gamma"
         v-if="banner3Url"
-        class="h-[200px] object-cover w-full md:h-[260px]"
+        class="h-[200px] object-cover w-full md:h-[300px]"
       />
     </div>
   </div>

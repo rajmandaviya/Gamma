@@ -18,41 +18,15 @@ export default defineEventHandler(async (event) => {
   try {
     console.log(`Fetching product with ID: ${id}`);
 
-    const removeUnwantedFields = (obj) => {
-      const fieldsToRemove = [
-        "created_at",
-        "created_by",
-        "updated_at",
-        "updated_by",
-        "nc_pka4__Atribute_id",
-        "nc_pka4__Atribute_id1",
-        "nc_pka4___Culori_id",
-        "nc_pka4___Branduri_id",
-        "nc_pka4__Produse_id",
-      ];
-
-      if (Array.isArray(obj)) {
-        return obj.map((item) => removeUnwantedFields(item));
-      } else if (typeof obj === "object" && obj !== null) {
-        const cleanedObj = { ...obj };
-        fieldsToRemove.forEach((field) => delete cleanedObj[field]);
-
-        Object.keys(cleanedObj).forEach((key) => {
-          if (typeof cleanedObj[key] === "object" && cleanedObj[key] !== null) {
-            cleanedObj[key] = removeUnwantedFields(cleanedObj[key]);
-          }
-        });
-
-        return cleanedObj;
-      }
-      return obj;
-    };
-
     const productQuery = `
-      SELECT p.*, b.*
+      SELECT 
+        p."id", p."Nume_Produs_RO", p."Nume_Produs_RU", p."Descriere_Produs_RO", 
+        p."Descriere_Produs_RU", p."Pret_Standard", p."Pret_Redus", 
+        p."Imagine_Principala", p."imagini_Secundare", p."Stock",
+        b."id" AS "brand_id", b."Denumire_Brand"
       FROM public."nc_pka4__Produse" p
-      LEFT JOIN public."nc_pka4___Branduri" b ON p."nc_pka4___Branduri_id" = b.id
-      WHERE p.id = $1;
+      LEFT JOIN public."nc_pka4___Branduri" b ON p."nc_pka4___Branduri_id" = b."id"
+      WHERE p."id" = $1;
     `;
     const productResult = await pool.query(productQuery, [id]);
 
@@ -65,8 +39,6 @@ export default defineEventHandler(async (event) => {
     }
 
     let product = productResult.rows[0];
-
-    product = removeUnwantedFields(product);
 
     if (product.Imagine_Principala) {
       product.Imagine_Principala = JSON.parse(product.Imagine_Principala).map(
@@ -81,20 +53,22 @@ export default defineEventHandler(async (event) => {
     }
 
     const variantQuery = `
-      SELECT v.*, 
-             row_to_json(a1) AS "Attribute_1", 
-             row_to_json(a2) AS "Attribute_2", 
-             row_to_json(c) AS "Culoare"
+      SELECT 
+        v."id", v."Varianta", v."Pret_Standard", v."Pret_Redus", 
+        v."Valoare_Atribute_1", v."Imagini", v."Stock", v."Valoare_Atribute_2",
+        a1."Atribut_RO_" AS "Atribut_1_RO", a1."Atribut_RU_" AS "Atribut_1_RU",
+        a2."Atribut_RO_" AS "Atribut_2_RO", a2."Atribut_RU_" AS "Atribut_2_RU",
+        c."Culoare_RO_", c."Culoare_RU_", c."Cod_Culoare"
       FROM public."nc_pka4___Variante" v
-      LEFT JOIN public."nc_pka4__Atribute" a1 ON v."nc_pka4__Atribute_id" = a1.id
-      LEFT JOIN public."nc_pka4__Atribute" a2 ON v."nc_pka4__Atribute_id1" = a2.id
-      LEFT JOIN public."nc_pka4___Culori" c ON v."nc_pka4___Culori_id" = c.id
+      LEFT JOIN public."nc_pka4__Atribute" a1 ON v."nc_pka4__Atribute_id" = a1."id"
+      LEFT JOIN public."nc_pka4__Atribute" a2 ON v."nc_pka4__Atribute_id1" = a2."id"
+      LEFT JOIN public."nc_pka4___Culori" c ON v."nc_pka4___Culori_id" = c."id"
       WHERE v."nc_pka4__Produse_id" = $1;
     `;
     const variantResult = await pool.query(variantQuery, [id]);
     let variants = variantResult.rows;
 
-    variants = removeUnwantedFields(variants).map((variant) => {
+    variants = variants.map((variant) => {
       if (variant.Imagini) {
         variant.Imagini = JSON.parse(variant.Imagini).map(
           (image) => `${baseUrl}/${image.path}`
@@ -103,9 +77,7 @@ export default defineEventHandler(async (event) => {
       return variant;
     });
 
-    console.log(
-      `Variants with attributes and colors for product ID ${id} fetched successfully`
-    );
+    console.log(`Product and variants for ID ${id} fetched successfully`);
 
     return {
       success: true,

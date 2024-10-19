@@ -19,15 +19,23 @@
             </NuxtLink>
           </h3>
 
-          <div class="my-2">
+          <div class="my-2 relative">
             <NuxtLink
               :to="generateSubcategoryLink(subcategory)"
               class="block w-full"
             >
+              <USkeleton
+                class="w-full h-48 rounded-md animate-pulse"
+                v-if="!imageLoaded[subcategory.id]"
+              />
               <img
                 :src="subcategory.images[0]"
                 :alt="getSubcategoryName(subcategory)"
                 class="w-full h-48 object-cover rounded-md hover:opacity-80 transition-opacity"
+                @load="imageLoaded[subcategory.id] = true"
+                :style="{
+                  display: imageLoaded[subcategory.id] ? 'block' : 'none',
+                }"
               />
             </NuxtLink>
           </div>
@@ -53,10 +61,6 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
-import { useFetch, useRouter } from '#app';
-import { useI18n } from 'vue-i18n';
-import slugify from 'slugify';
 
 const props = defineProps({
   categoryId: {
@@ -74,6 +78,8 @@ const error = ref(null);
 const { locale } = useI18n();
 const router = useRouter();
 
+const imageLoaded = reactive({});
+
 watch(
   () => props.categoryId,
   async (newCategoryId) => {
@@ -89,6 +95,10 @@ watch(
     } else {
       subcategories.value = data.value?.data || [];
       error.value = null;
+      // Initialize imageLoaded state for each subcategory
+      subcategories.value.forEach((subcategory) => {
+        imageLoaded[subcategory.id] = false;
+      });
     }
   },
   { immediate: true }
