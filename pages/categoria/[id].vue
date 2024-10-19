@@ -2,28 +2,47 @@
   <div>
     <h1>Category: {{ categoryId[0] }}</h1>
     <!-- Render subcategories -->
-    <ul
-      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10"
+
+    <Carousel
+      class="relative w-full px-8"
+      :opts="{
+        align: 'start',
+      }"
     >
-      <li v-for="subcategory in subcategories.data" class="">
-        <SubCategoryCard
-          :categoryId="categoryId[1]"
-          :subcategory="subcategory"
+      <CarouselContent>
+        <CarouselItem
+          v-for="subcategory in subcategories.data"
           :key="subcategory.id"
-        />
-      </li>
-    </ul>
+          class="md:basis-1/2 lg:basis-1/3 xl:basis-1/5"
+        >
+          <SubCategoryCard
+            :categoryId="categoryId[1]"
+            :subcategory="subcategory"
+            :key="subcategory.id"
+          />
+        </CarouselItem>
+      </CarouselContent>
+      <CarouselPrevious class="absolute -left-2" />
+      <CarouselNext class="absolute -right-2" />
+    </Carousel>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useRoute } from "vue-router";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
+import { ref } from 'vue';
+import { useRoute } from 'vue-router';
 const subcategories = ref([]);
 
 // Get the first level categoryId from the route
 const route = useRoute();
-const categoryId = route.params.id.split("_");
+const categoryId = route.params.id.split('_');
 
 const { data } = await useFetch(
   `/api/subCategories?categoryId=${categoryId[1]}`

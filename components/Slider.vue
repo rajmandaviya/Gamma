@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from "vue";
-import { useRoute } from "vue-router";
-import { useAsyncData } from "#imports";
+import { ref, onMounted, watch } from 'vue';
+import { useRoute } from 'vue-router';
+import { useAsyncData } from '#imports';
 
 // Define the interface for slider data
 interface SliderData {
@@ -18,7 +18,7 @@ const route = useRoute(); // Get the current route
 // Function to determine and display appropriate slider based on locale
 const displaySliders = (sliderData: SliderData[], locale: string) => {
   const slider = sliderData[0]; // Assuming there's only one slider set in the response
-  if (locale === "ru") {
+  if (locale === 'ru') {
     items.value = slider.Bannere_Slider_RU_; // Set RU slider images
   } else {
     items.value = slider.Bannere_Slider_RO_; // Set RO slider images
@@ -29,17 +29,17 @@ const displaySliders = (sliderData: SliderData[], locale: string) => {
 // Fetch all sliders and render the correct one based on locale
 const fetchSliders = async () => {
   loading.value = true; // Set loading to true before fetching
-  const { data, error } = await useAsyncData("marketingDesign", () =>
+  const { data, error } = await useAsyncData('marketingDesign', () =>
     $fetch(`/api/marketingDesign`)
   );
 
   if (data?.value && data.value.success) {
-    const locale: string = route.fullPath.includes("/ru") ? "ru" : "ro";
+    const locale: string = route.fullPath.includes('/ru') ? 'ru' : 'ro';
     displaySliders(data.value.data as SliderData[], locale);
   } else {
     console.error(
-      "Error fetching sliders:",
-      error?.value || "No sliders available"
+      'Error fetching sliders:',
+      error?.value || 'No sliders available'
     );
     loading.value = false; // Set loading to false if there's an error
   }

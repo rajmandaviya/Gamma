@@ -1,7 +1,7 @@
 <script setup>
-import { useI18n } from "vue-i18n";
-import { useRoute } from "vue-router";
-import slugify from "slugify";
+import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
+import slugify from 'slugify';
 
 const { path } = useRoute();
 
@@ -29,14 +29,14 @@ const { subcategory } = props;
 // };
 
 const getName = (subcategory) => {
-  return locale.value === "ru"
+  return locale.value === 'ru'
     ? subcategory.subcategory_name_ru
     : subcategory.subcategory_name_ro;
 };
 
 const generateSubcategoryLink = (subcategory) => {
   return `${path}/${slugify(subcategory.subcategory_name_ro, {
-    replacement: "-",
+    replacement: '-',
     lower: true,
     strict: true,
   })}_${subcategory.id}`;
