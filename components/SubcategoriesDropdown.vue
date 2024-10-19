@@ -132,7 +132,9 @@ const getSubsubName = (subsub) => {
 
 const generateSubcategoryLink = (subcategory) => {
   if (!props.categorySlug || !subcategory) return "";
-  return `/categoria/${props.categorySlug}/${createSlug(subcategory)}`;
+  return `${locale.value === "ru" && "/ru"}/categoria/${
+    props.categorySlug
+  }/${createSlug(subcategory)}_${subcategory.id}`;
 };
 
 const generateSubsubcategoryLink = (subcategory, subsub) => {
