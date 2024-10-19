@@ -1,7 +1,8 @@
 <script setup>
-import { useI18n } from "vue-i18n";
-// import { useRoute } from "vue-router";
-// import slugify from "slugify";
+import { useI18n } from 'vue-i18n';
+import slugify from 'slugify';
+import { useRoute } from 'vue-router';
+const { path } = useRoute();
 
 const { locale } = useI18n();
 
@@ -13,40 +14,40 @@ const props = defineProps({
 });
 const { subSubCategory } = props;
 
-// const getSubcategoryName = (subsubcategory) => {
-//   return locale.value === "ru"
-//     ? slugify(subsubcategory.subsub_name_ro, {
-//         replacement: "-",
-//         lower: true,
-//         strict: true,
-//       })
-//     : slugify(subsubcategory.subsub_name_ro, {
-//         replacement: "-",
-//         lower: true,
-//         strict: true,
-//       });
-// };
+const getSubcategoryName = (subsubcategory) => {
+  return locale.value === 'ru'
+    ? slugify(subsubcategory.subsub_name_ro, {
+        replacement: '-',
+        lower: true,
+        strict: true,
+      })
+    : slugify(subsubcategory.subsub_name_ro, {
+        replacement: '-',
+        lower: true,
+        strict: true,
+      });
+};
 
-// const generateSubcategoryLink = (subcategory) => {
-//   return `${path}/${getSubcategoryName(subcategory)}_${subcategory.id}`;
-// };
+const generateSubSubcategoryLink = () => {
+  return `${path}/${getSubcategoryName(subSubCategory)}_${subSubCategory.id}`;
+};
 
 const getName = (subSubCategory) => {
-  return locale.value === "ru"
+  return locale.value === 'ru'
     ? subSubCategory.subsub_name_ru
     : subSubCategory.subsub_name_ro;
 };
 </script>
 
 <template>
-  <UCard
-    class="shadow-lg flex flex-col items-center border-2 border-gray-200 hover:border-green-400 h-full"
-  >
-    <!-- <NuxtLink :to="generateSubcategoryLink(subcategory)"> -->
-    <!-- <img :src="subcategory.images[0]" alt="" class="rounded-xl" /> -->
-    <h1 class="text-center font-bold text-base">
-      {{ getName(subSubCategory) }}
-    </h1>
-    <!-- </NuxtLink> -->
-  </UCard>
+  <NuxtLink :to="generateSubSubcategoryLink()">
+    <UCard
+      class="shadow-lg flex flex-col items-center border-2 border-gray-200 hover:border-green-400 h-full"
+    >
+      <!-- <img :src="subcategory.images[0]" alt="" class="rounded-xl" /> -->
+      <h1 class="text-center font-bold text-base">
+        {{ getName(subSubCategory) }}
+      </h1>
+    </UCard>
+  </NuxtLink>
 </template>

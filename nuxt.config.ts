@@ -8,6 +8,8 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "@nuxtjs/color-mode",
     "nuxt-auth-utils",
+    "@nuxtjs/tailwindcss",
+    "shadcn-nuxt",
   ],
   i18n: {
     locales: ["ro", "ru"],
@@ -51,4 +53,16 @@ export default defineNuxtConfig({
   devtools: {
     enabled: false,
   },
+
+  shadcn: {
+    /**
+     * Prefix for all the imported component
+     */
+    prefix: '',
+    /**
+     * Directory that the component lives in.
+     * @default "./components/ui"
+     */
+    componentDir: './components/ui'
+  }
 });
