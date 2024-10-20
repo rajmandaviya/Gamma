@@ -1,7 +1,7 @@
 <script setup>
-import { useI18n } from 'vue-i18n';
-import slugify from 'slugify';
-import { useRoute } from 'vue-router';
+import { useI18n } from "vue-i18n";
+import slugify from "slugify";
+import { useRoute } from "vue-router";
 const { path } = useRoute();
 
 const { locale } = useI18n();
@@ -15,14 +15,14 @@ const props = defineProps({
 const { subSubCategory } = props;
 
 const getSubcategoryName = (subsubcategory) => {
-  return locale.value === 'ru'
+  return locale.value === "ru"
     ? slugify(subsubcategory.subsub_name_ro, {
-        replacement: '-',
+        replacement: "-",
         lower: true,
         strict: true,
       })
     : slugify(subsubcategory.subsub_name_ro, {
-        replacement: '-',
+        replacement: "-",
         lower: true,
         strict: true,
       });
@@ -33,7 +33,7 @@ const generateSubSubcategoryLink = () => {
 };
 
 const getName = (subSubCategory) => {
-  return locale.value === 'ru'
+  return locale.value === "ru"
     ? subSubCategory.subsub_name_ru
     : subSubCategory.subsub_name_ro;
 };
@@ -41,13 +41,12 @@ const getName = (subSubCategory) => {
 
 <template>
   <NuxtLink :to="generateSubSubcategoryLink()">
-    <UCard
-      class="shadow-lg flex flex-col items-center border-2 border-gray-200 hover:border-green-400 h-full"
+    <div
+      class="flex bg-transparent flex-col items-center border border-gray-200 dark:border-gray-700 hover:border-accent dark:hover:border-accent h-full rounded-xl overflow-hidden p-4"
     >
-      <!-- <img :src="subcategory.images[0]" alt="" class="rounded-xl" /> -->
       <h1 class="text-center font-bold text-base">
         {{ getName(subSubCategory) }}
       </h1>
-    </UCard>
+    </div>
   </NuxtLink>
 </template>

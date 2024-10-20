@@ -2,6 +2,7 @@
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import slugify from "slugify";
+import { ref } from "vue";
 
 const { path } = useRoute();
 
@@ -13,6 +14,8 @@ const props = defineProps({
   },
 });
 const { subcategory } = props;
+
+const imageLoaded = ref(false);
 
 // const getSubcategoryName = (subcategory) => {
 //   return locale.value === "ru"
@@ -45,10 +48,17 @@ const generateSubcategoryLink = (subcategory) => {
 
 <template>
   <div
-    class="flex bg-transparent flex-col items-center border border-gray-200 dark:border-gray-700 hover:border-green-400 h-full rounded-xl overflow-hidden"
+    class="flex bg-transparent flex-col items-center border border-gray-200 dark:border-gray-700 hover:border-accent h-full rounded-xl overflow-hidden dark:hover:border-accent"
   >
     <NuxtLink :to="generateSubcategoryLink(subcategory)">
-      <img :src="subcategory.images[0]" alt="" class="" />
+      <USkeleton class="w-56 h-48 animate-pulse" v-if="!imageLoaded" />
+      <img
+        :src="subcategory.images[0]"
+        :alt="getName(subcategory)"
+        class="w-56 h-48"
+        @load="imageLoaded = true"
+        :style="{ display: imageLoaded ? 'block' : 'none' }"
+      />
       <h1 class="text-center font-bold text-base my-2">
         {{ getName(subcategory) }}
       </h1>

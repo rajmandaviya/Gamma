@@ -1,33 +1,52 @@
 <template>
   <div>
     <h1>Subcategory: {{ subcategorySlug }}</h1>
-    <ul
-      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4"
+    <Carousel
+      class="relative w-full px-8 py-8"
+      :opts="{
+        align: 'start',
+      }"
     >
-      <li v-for="subSubcategory in subSubCategories" class="">
-        <SubSubCategoryCard
-          :sub-sub-category="subSubcategory"
+      <CarouselContent class="p-8">
+        <CarouselItem
+          v-for="subSubcategory in subSubCategories"
           :key="subSubcategory.id"
-        />
-      </li>
-    </ul>
+          class="md:basis-1/2 lg:basis-1/3 xl:basis-1/5"
+        >
+          <SubSubCategoryCard
+            :sub-sub-category="subSubcategory"
+            :key="subSubcategory.id"
+          />
+        </CarouselItem>
+      </CarouselContent>
+      <CarouselPrevious class="absolute -left-2" />
+      <CarouselNext class="absolute -right-2" />
+    </Carousel>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useRoute } from 'vue-router';
-import SubSubCategoryCard from '~/components/SubSubCategoryCard.vue';
+import { ref } from "vue";
+import { useRoute } from "vue-router";
+import SubSubCategoryCard from "~/components/SubSubCategoryCard.vue";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+
 const subSubCategories = ref([]);
 
 const route = useRoute();
 const subcategorySlug = route.params.subCategorySlug;
 
 const { data } = await useFetch(
-  `/api/subCategories?categoryId=${route.params.categorySlug.split('_')[1]}`
+  `/api/subCategories?categoryId=${route.params.categorySlug.split("_")[1]}`
 );
 let res = data.value.data.filter(
-  (s) => s.id === Number(subcategorySlug.split('_')[1])
+  (s) => s.id === Number(subcategorySlug.split("_")[1])
 );
 subSubCategories.value = res[0].subSubcategories;
 </script>

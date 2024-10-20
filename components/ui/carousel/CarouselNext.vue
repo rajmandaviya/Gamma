@@ -15,7 +15,7 @@ const { orientation, canScrollNext, scrollNext } = useCarousel();
     v-if="canScrollNext"
     :class="
       cn(
-        'touch-manipulation absolute h-8 w-8 rounded-full p-0',
+        'touch-manipulation absolute h-8 w-8 rounded-full p-0 dark:bg-charade-900 dark:hover:bg-charade-700',
         orientation === 'horizontal'
           ? '-right-12 top-1/2 -translate-y-1/2'
           : '-bottom-12 left-1/2 -translate-x-1/2 rotate-90',
