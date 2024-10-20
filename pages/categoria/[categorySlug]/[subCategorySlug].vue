@@ -2,7 +2,7 @@
   <div>
     <h1>Subcategory: {{ subcategorySlug }}</h1>
     <Carousel
-      class="relative w-full px-8 py-8"
+      class="relative w-full px-10 py-8"
       :opts="{
         align: 'start',
       }"

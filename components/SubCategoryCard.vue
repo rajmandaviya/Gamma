@@ -48,18 +48,21 @@ const generateSubcategoryLink = (subcategory) => {
 
 <template>
   <div
-    class="flex bg-transparent flex-col items-center border border-gray-200 dark:border-gray-700 hover:border-accent h-full rounded-xl overflow-hidden dark:hover:border-accent"
+    class="flex h-full bg-transparent flex-col items-center border border-gray-200 dark:border-gray-700 hover:border-accent rounded-xl overflow-hidden dark:hover:border-accent"
   >
-    <NuxtLink :to="generateSubcategoryLink(subcategory)">
+    <NuxtLink
+      :to="generateSubcategoryLink(subcategory)"
+      class="flex-col w-full"
+    >
       <USkeleton class="w-56 h-48 animate-pulse" v-if="!imageLoaded" />
       <img
         :src="subcategory.images[0]"
         :alt="getName(subcategory)"
-        class="w-56 h-48"
+        class="flex w-full h-48 object-cover"
         @load="imageLoaded = true"
         :style="{ display: imageLoaded ? 'block' : 'none' }"
       />
-      <h1 class="text-center font-bold text-base my-2">
+      <h1 class="text-center font-bold text-base my-4">
         {{ getName(subcategory) }}
       </h1>
     </NuxtLink>
