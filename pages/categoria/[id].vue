@@ -4,12 +4,12 @@
     <!-- Render subcategories -->
 
     <Carousel
-      class="relative w-full px-8"
+      class="relative w-full px-8 py-8"
       :opts="{
         align: 'start',
       }"
     >
-      <CarouselContent>
+      <CarouselContent class="p-8">
         <CarouselItem
           v-for="subcategory in subcategories.data"
           :key="subcategory.id"
@@ -35,14 +35,14 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from '@/components/ui/carousel';
-import { ref } from 'vue';
-import { useRoute } from 'vue-router';
+} from "@/components/ui/carousel";
+import { ref } from "vue";
+import { useRoute } from "vue-router";
 const subcategories = ref([]);
 
 // Get the first level categoryId from the route
 const route = useRoute();
-const categoryId = route.params.id.split('_');
+const categoryId = route.params.id.split("_");
 
 const { data } = await useFetch(
   `/api/subCategories?categoryId=${categoryId[1]}`

@@ -1,7 +1,7 @@
 <script setup>
-import { useI18n } from 'vue-i18n';
-import { useRoute } from 'vue-router';
-import slugify from 'slugify';
+import { useI18n } from "vue-i18n";
+import { useRoute } from "vue-router";
+import slugify from "slugify";
 
 const { path } = useRoute();
 
@@ -29,14 +29,14 @@ const { subcategory } = props;
 // };
 
 const getName = (subcategory) => {
-  return locale.value === 'ru'
+  return locale.value === "ru"
     ? subcategory.subcategory_name_ru
     : subcategory.subcategory_name_ro;
 };
 
 const generateSubcategoryLink = (subcategory) => {
   return `${path}/${slugify(subcategory.subcategory_name_ro, {
-    replacement: '-',
+    replacement: "-",
     lower: true,
     strict: true,
   })}_${subcategory.id}`;
@@ -44,14 +44,14 @@ const generateSubcategoryLink = (subcategory) => {
 </script>
 
 <template>
-  <UCard
-    class="shadow-lg flex flex-col items-center border-2 border-gray-200 hover:border-green-400 h-full"
+  <div
+    class="flex bg-transparent flex-col items-center border border-gray-200 dark:border-gray-700 hover:border-green-400 h-full rounded-xl overflow-hidden"
   >
     <NuxtLink :to="generateSubcategoryLink(subcategory)">
-      <img :src="subcategory.images[0]" alt="" class="rounded-xl" />
-      <h1 class="text-center font-bold text-base mt-6">
+      <img :src="subcategory.images[0]" alt="" class="" />
+      <h1 class="text-center font-bold text-base my-2">
         {{ getName(subcategory) }}
       </h1>
     </NuxtLink>
-  </UCard>
+  </div>
 </template>
