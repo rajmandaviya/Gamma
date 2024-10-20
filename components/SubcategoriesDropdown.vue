@@ -24,10 +24,18 @@
               :to="generateSubcategoryLink(subcategory)"
               class="block w-full"
             >
+              <USkeleton
+                class="w-full h-48 rounded-md animate-pulse"
+                v-if="!imageLoaded[subcategory.id]"
+              />
               <img
                 :src="subcategory.images[0]"
                 :alt="getSubcategoryName(subcategory)"
                 class="w-full h-48 object-cover rounded-md hover:opacity-80 transition-opacity"
+                @load="imageLoaded[subcategory.id] = true"
+                :style="{
+                  display: imageLoaded[subcategory.id] ? 'block' : 'none',
+                }"
               />
             </NuxtLink>
           </div>
@@ -53,10 +61,12 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
-import { useFetch, useRouter } from '#app';
-import { useI18n } from 'vue-i18n';
-import slugify from 'slugify';
+import { ref, watch, reactive } from "vue";
+import { useFetch, useRouter } from "#app";
+import { useI18n } from "vue-i18n";
+import slugify from "slugify";
+
+const imageLoaded = reactive({});
 
 const props = defineProps({
   categoryId: {
@@ -90,6 +100,9 @@ watch(
       subcategories.value = data.value?.data || [];
       error.value = null;
     }
+    subcategories.value.forEach((subcategory) => {
+      imageLoaded[subcategory.id] = false;
+    });
   },
   { immediate: true }
 );
@@ -98,33 +111,33 @@ const createSlug = (item, isSubsub = false) => {
   const name = isSubsub ? item.subsub_name_ro : item.subcategory_name_ro;
 
   return slugify(name, {
-    replacement: '-',
+    replacement: "-",
     lower: true,
     strict: true,
   });
 };
 
 const getSubcategoryName = (subcategory) => {
-  return locale.value === 'ru'
-    ? subcategory.subcategory_name_ru || 'Unnamed'
-    : subcategory.subcategory_name_ro || 'Unnamed';
+  return locale.value === "ru"
+    ? subcategory.subcategory_name_ru || "Unnamed"
+    : subcategory.subcategory_name_ro || "Unnamed";
 };
 
 const getSubsubName = (subsub) => {
-  return locale.value === 'ru'
-    ? subsub.subsub_name_ru || 'Unnamed'
-    : subsub.subsub_name_ro || 'Unnamed';
+  return locale.value === "ru"
+    ? subsub.subsub_name_ru || "Unnamed"
+    : subsub.subsub_name_ro || "Unnamed";
 };
 
 const generateSubcategoryLink = (subcategory) => {
-  if (!props.categorySlug || !subcategory) return '';
-  return `${locale.value === 'ru' ? '/ru' : ''}/categoria/${
+  if (!props.categorySlug || !subcategory) return "";
+  return `${locale.value === "ru" ? "/ru" : ""}/categoria/${
     props.categorySlug
   }/${createSlug(subcategory)}_${subcategory.id}`;
 };
 
 const generateSubsubcategoryLink = (subcategory, subsub) => {
-  if (!props.categorySlug || !subcategory || !subsub) return '';
+  if (!props.categorySlug || !subcategory || !subsub) return "";
   return `/categoria/${props.categorySlug}/${createSlug(subcategory)}_${
     subcategory.id
   }/${createSlug(subsub, true)}_${subsub.id}`;
