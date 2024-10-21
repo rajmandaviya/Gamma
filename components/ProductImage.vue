@@ -1,22 +1,38 @@
 <script setup>
 import { ref } from 'vue';
-const primaryImage = ref('');
+
 const props = defineProps({
   product: { type: Object, required: true },
+  productVariant: { required: true },
 });
-const { product } = props;
-primaryImage.value = product.Imagine_Principala[0];
+const { product, productVariant } = props;
+
+const image = ref(product.Imagine_Principala[0]);
+
+watch(
+  () => productVariant,
+  () => {
+    console.log(productVariant);
+    if (productVariant.value) {
+      if (productVariant.value.Imagini) {
+        image.value = productVariant.value.Imagini[0];
+        return;
+      }
+    }
+    if (productVariant.Imagini) {
+      image.value = productVariant.value.Imagini[0];
+      return;
+    }
+    // variantName.value = getProductName();
+  },
+  { deep: true, immediate: true }
+);
 </script>
 
 <template>
   <div class="w-fit flex flex-col gap-4">
     <UCard class="w-fit">
-      <img
-        :src="primaryImage"
-        alt=""
-        class="object-contain min-w-80"
-        loading="lazy"
-      />
+      <img :src="image" alt="" class="object-contain min-w-80" loading="lazy" />
     </UCard>
     <UCarousel
       v-slot="{ item }"

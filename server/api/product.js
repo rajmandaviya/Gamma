@@ -1,14 +1,14 @@
-import pool from "~/server/db";
-import { useRuntimeConfig } from "#imports";
+import pool from '~/server/db';
+import { useRuntimeConfig } from '#imports';
 
 export default defineEventHandler(async (event) => {
   const { id } = getQuery(event);
 
   if (!id) {
-    console.error("Product ID is missing");
+    console.error('Product ID is missing');
     throw createError({
       statusCode: 400,
-      message: "Product ID is required",
+      message: 'Product ID is required',
     });
   }
 
@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
       console.error(`Product with ID ${id} not found`);
       throw createError({
         statusCode: 404,
-        message: "Product not found",
+        message: 'Product not found',
       });
     }
 
@@ -53,8 +53,8 @@ export default defineEventHandler(async (event) => {
     }
 
     const variantQuery = `
-      SELECT 
-        v."id", v."Varianta", v."Pret_Standard", v."Pret_Redus", 
+      SELECT
+        v."id", v."Varianta", v."Pret_Standard", v."Pret_Redus",
         v."Valoare_Atribute_1", v."Imagini", v."Stock", v."Valoare_Atribute_2",
         a1."Atribut_RO_" AS "Atribut_1_RO", a1."Atribut_RU_" AS "Atribut_1_RU",
         a2."Atribut_RO_" AS "Atribut_2_RO", a2."Atribut_RU_" AS "Atribut_2_RU",
@@ -65,6 +65,7 @@ export default defineEventHandler(async (event) => {
       LEFT JOIN public."nc_pka4___Culori" c ON v."nc_pka4___Culori_id" = c."id"
       WHERE v."nc_pka4__Produse_id" = $1;
     `;
+
     const variantResult = await pool.query(variantQuery, [id]);
     let variants = variantResult.rows;
 
@@ -85,12 +86,12 @@ export default defineEventHandler(async (event) => {
       variants,
     };
   } catch (error) {
-    console.error("Error fetching product or variants:", error.message);
-    console.error("Full error details:", error.stack);
+    console.error('Error fetching product or variants:', error.message);
+    console.error('Full error details:', error.stack);
 
     return {
       success: false,
-      error: error.message || "Failed to fetch product and variants",
+      error: error.message || 'Failed to fetch product and variants',
     };
   }
 });

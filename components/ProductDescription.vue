@@ -1,11 +1,13 @@
 <script setup>
+import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 const { locale } = useI18n();
 
 const props = defineProps({
   product: { type: Object, required: true },
+  productVariant: { required: true },
 });
-const { product } = props;
+const { product, productVariant } = props;
 
 const getProductName = () => {
   return locale.value === 'ru'
@@ -17,12 +19,32 @@ const getProductDesc = () => {
     ? product.Descriere_Produs_RU
     : product.Descriere_Produs_RO;
 };
+
+const variantName = ref(getProductName());
+
+watch(
+  () => productVariant,
+  () => {
+    if (productVariant.value) {
+      if (productVariant.value.Varianta) {
+        variantName.value = productVariant.value.Varianta;
+        return;
+      }
+    }
+    if (productVariant.Varianta) {
+      variantName.value = productVariant.Varianta;
+      return;
+    }
+    variantName.value = getProductName();
+  },
+  { deep: true, immediate: true }
+);
 </script>
 
 <template>
   <ul class="ml-24">
     <li class="text=[#333333] font-semibold text-4xl pb-14">
-      <h1>{{ getProductName() }}</h1>
+      <h1>{{ variantName }}</h1>
     </li>
     <li class="border-t py-16">
       <p class="text-[#4D4D4D] font-normal text-base">{{ getProductDesc() }}</p>
