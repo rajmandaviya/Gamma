@@ -2,7 +2,6 @@
   <!-- Category List (shown when no category is selected) -->
   <div v-if="!selectedCategory">
     <h2 class="text-2xl font-semibold mb-4">
-      {{ $t('Toate Categoriiile') }}
     </h2>
     <ul>
       <li
@@ -49,7 +48,7 @@
       <div
         v-for="subcategory in subcategories"
         :key="subcategory.id"
-        class="break-inside-avoid p-3 bg-[#3A3B4A] rounded-md mb-4"
+        class="break-inside-avoid p-3 bg-[#3A3B4A] rounded-lg mb-4"
       >
         <!-- Subcategory Title -->
         <h3 class="text-xl font-semibold">
@@ -65,11 +64,19 @@
             :to="generateSubcategoryLink(subcategory)"
             class="block w-full"
           >
+            <USkeleton
+              class="w-full h-48 rounded-lg animate-pulse"
+              v-if="!imageLoaded[subcategory.id]"
+            />
             <img
               v-if="subcategory.images && subcategory.images.length > 0"
               :src="subcategory.images[0]"
               :alt="getSubcategoryName(subcategory)"
               class="w-full h-48 object-cover rounded-md hover:opacity-80 transition-opacity"
+              @load="imageLoaded[subcategory.id] = true"
+              :style="{
+                display: imageLoaded[subcategory.id] ? 'block' : 'none',
+              }"
             />
           </NuxtLink>
         </div>
@@ -94,16 +101,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useFetch } from '#app';
-import { useI18n } from 'vue-i18n';
-import slugify from 'slugify';
 
 // Categories ref to store fetched data
 const categories = ref([]);
 const subcategories = ref([]);
 const selectedCategory = ref(null);
 const error = ref(null);
+const imageLoaded = reactive({});
 
 // Fetch the categories data from the API
 const { data, pending, error: fetchError } = await useFetch('/api/categories');
@@ -145,6 +149,9 @@ const fetchSubcategories = async (category) => {
     subcategories.value = [];
   } else {
     subcategories.value = data.value?.data || [];
+    subcategories.value.forEach((subcategory) => {
+      imageLoaded[subcategory.id] = false;
+    });
   }
 };
 
