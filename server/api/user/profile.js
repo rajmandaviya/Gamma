@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
     const userId = session.user.id;
 
     const result = await pool.query(
-      `SELECT "Nume", "Prenume", "Email", "Numar_Telefon", "Provider" FROM "nc_pka4___Utilizatori" WHERE "id" = $1`,
+      `SELECT "Nume", "Prenume", "Email", "Numar_Telefon", "Provider", "Profile_Image" FROM "nc_pka4___Utilizatori" WHERE "id" = $1`,
       [userId]
     );
 
@@ -33,6 +33,7 @@ export default defineEventHandler(async (event) => {
       Email: user.Email,
       Numar_Telefon: user.Numar_Telefon,
       Provider: user.Provider,
+      Profile_Image: user.Profile_Image,
     };
   } catch (error) {
     throw createError({

@@ -10,5 +10,10 @@
     </div>
     <BottomBar class="fixed z-10" />
     <Footer />
+    <Toaster />
   </div>
 </template>
+
+<script setup>
+import { Toaster } from "@/components/ui/toast";
+</script>
