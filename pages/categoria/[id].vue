@@ -1,7 +1,6 @@
 <template>
   <div>
     <h1>Category: {{ categoryId[0] }}</h1>
-    <!-- Render subcategories -->
 
     <Carousel
       class="relative w-full px-8 py-8"

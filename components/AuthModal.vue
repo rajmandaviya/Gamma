@@ -8,11 +8,14 @@ const {
 } = useUserSession();
 
 import { useI18n } from "vue-i18n";
-import { ref } from "vue";
+import { ref, computed, watchEffect } from "vue";
 
 const { t } = useI18n();
 
 const activeTab = ref("login");
+const profileImage = ref("");
+const imageLoaded = ref(false);
+const imageError = ref(false);
 
 const email = ref("");
 const fullName = ref("");
@@ -23,6 +26,39 @@ const loginPassword = ref("");
 
 const errorMessage = ref("");
 const successMessage = ref("");
+
+const { data: userData, error: userDataError } = useFetch(
+  () => (loggedIn.value ? "/api/user/profile" : null),
+  {
+    server: false,
+    lazy: true,
+  }
+);
+
+watchEffect(() => {
+  if (userData.value && userData.value.Profile_Image) {
+    profileImage.value = userData.value.Profile_Image;
+    const img = new Image();
+    img.onload = () => {
+      imageLoaded.value = true;
+      imageError.value = false;
+    };
+    img.onerror = () => {
+      imageLoaded.value = false;
+      imageError.value = true;
+    };
+    img.src = userData.value.Profile_Image;
+  } else {
+    imageError.value = true;
+  }
+});
+
+const userInitials = computed(() => {
+  if (userData.value?.Nume && userData.value?.Prenume) {
+    return (userData.value.Nume[0] + userData.value.Prenume[0]).toUpperCase();
+  }
+  return user.value?.firstName?.[0]?.toUpperCase() || "";
+});
 
 const switchTab = (tab) => {
   activeTab.value = tab;
@@ -157,13 +193,27 @@ console.log(user);
       v-if="loggedIn"
       class="w-56 flex border border-gray-300 dark:border-gray-700 rounded-lg p-4 bg-white dark:bg-charade-900 justify-center flex-col"
     >
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-2 justify-center items-center">
         <h1 class="text-center text-xl font-bold">
           {{ t("Welcome") }}
         </h1>
+        <div class="w-14 h-14 rounded-full overflow-hidden relative">
+          <img
+            v-if="!imageError"
+            :src="profileImage"
+            alt="Profile Image"
+            class="w-full h-full object-cover"
+            @error="imageError = true"
+          />
+          <div
+            v-else
+            class="w-full h-full bg-gray-300 flex items-center justify-center text-2xl font-bold text-gray-600"
+          >
+            {{ userInitials }}
+          </div>
+        </div>
         <h2 class="text-center text-base">
-          {{ user.firstName }}
-          {{ user.lastName }}
+          {{ userData?.Nume }} {{ userData?.Prenume }}
         </h2>
       </div>
       <div class="mt-4 flex flex-col gap-4">

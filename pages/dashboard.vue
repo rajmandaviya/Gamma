@@ -102,20 +102,6 @@
         <p>{{ error.message || t("An error occurred") }}</p>
       </div>
     </div>
-
-    <!-- UNotification Component with fixed position at the bottom and close button -->
-    <UNotification
-      v-if="notification"
-      class="fixed bottom-5 left-0 right-0 md:w-[20%] w-[90%] mx-auto"
-      :title="notification.title"
-      :description="notification.description"
-      :type="notification.type"
-      :timeout="0"
-      :close-button="false"
-      @click="removeNotification"
-      @timeout="removeNotification"
-    >
-    </UNotification>
   </div>
 </template>
 
@@ -123,9 +109,11 @@
 import { ref, reactive, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
+import { useToast } from "@/components/ui/toast/use-toast";
 
 const { t } = useI18n();
 const router = useRouter();
+const { toast } = useToast();
 
 const selectedTab = ref("profile");
 
@@ -164,13 +152,6 @@ watch(
   { immediate: true }
 );
 
-const toast = useToast();
-const notification = ref(null);
-
-const removeNotification = () => {
-  notification.value = null;
-};
-
 const updateProfile = async () => {
   try {
     const updateData = {
@@ -196,32 +177,22 @@ const updateProfile = async () => {
       throw new Error(error.value.message || "Failed to update profile");
     }
 
-    notification.value = {
+    toast({
       title: t("Success"),
       description: t("Profilul a fost actualizat"),
-      type: "success",
-      duration: 2000,
-    };
+      variant: "default",
+    });
 
     await refresh();
     profileForm.password = "";
-
-    setTimeout(() => {
-      removeNotification();
-    }, notification.value.duration);
   } catch (error) {
     console.error("Error updating profile:", error);
 
-    notification.value = {
+    toast({
       title: t("Error"),
       description: error.message || t("An error occurred"),
-      type: "error",
-      duration: 3000,
-    };
-
-    setTimeout(() => {
-      removeNotification();
-    }, notification.value.duration);
+      variant: "destructive",
+    });
   }
 };
 </script>
