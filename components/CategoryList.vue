@@ -2,7 +2,7 @@
   <!-- Category List (shown when no category is selected) -->
   <div v-if="!selectedCategory">
     <h2 class="text-2xl font-semibold mb-4">
-      {{ $t("Toate Categoriile") }}
+      {{ $t("Toate categoriile") }}
     </h2>
     <ul>
       <li
