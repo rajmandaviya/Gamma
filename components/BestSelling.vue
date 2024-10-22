@@ -56,7 +56,6 @@ async function fetchBanner2() {
     const response = await fetch("/api/marketingDesign");
     const data = await response.json();
     if (data.success && data.data.length > 0) {
-      // Determine which banner to use based on the locale
       if (locale.value === "ro") {
         banner2Url.value = data.data[0].Banner2_RO_[0];
       } else if (locale.value === "ru") {

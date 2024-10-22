@@ -1,75 +1,87 @@
 <template>
-  <div
-    class="items-center md:w-full mt-10 mb-12 w-[100vw] ml-[-5vw] md:ml-0 md:mr-0"
-  >
+  <div class="mt-10 mb-12">
     <div class="flex mb-10 justify-center">
       <h1 class="text-4xl font-bold text-center">{{ t("Top Categories") }}</h1>
     </div>
-    <div
-      class="flex gap-5 overflow-x-auto lg:overflow-x-hidden lg:justify-center"
-    >
-      <div
-        class="flex p-4 justify-between cursor-pointer dark:bg-charade-800 border border-charade-900 hover:border-accent bg-charade-950 w-[350px] h-[110px] rounded-xl shrink-0 m-1"
-      >
-        <div>
-          <p class="text-white text-sm mb-2">{{ t("Category") }}</p>
-          <p class="text-white text-xl mb-2">Categorie name</p>
-          <div class="w-20 h-[1px] bg-white"></div>
-        </div>
-        <img
-          src="https://via.placeholder.com/150"
-          alt="Categorie name"
-          class="w-20 h-20 rounded-lg"
-        />
-      </div>
-      <div
-        class="flex p-4 justify-between cursor-pointer dark:bg-charade-800 border border-charade-900 hover:border-accent bg-charade-950 w-[350px] h-[110px] rounded-xl shrink-0 m-1"
-      >
-        <div>
-          <p class="text-white text-sm mb-2">{{ t("Category") }}</p>
-          <p class="text-white text-xl mb-2">Categorie name</p>
-          <div class="w-20 h-[1px] bg-white"></div>
-        </div>
-        <img
-          src="https://via.placeholder.com/150"
-          alt="Categorie name"
-          class="w-20 h-20 rounded-lg"
-        />
-      </div>
-      <div
-        class="flex p-4 justify-between cursor-pointer dark:bg-charade-800 border border-charade-900 hover:border-accent bg-charade-950 w-[350px] h-[110px] rounded-xl shrink-0 m-1"
-      >
-        <div>
-          <p class="text-white text-sm mb-2">{{ t("Category") }}</p>
-          <p class="text-white text-xl mb-2">Categorie name</p>
-          <div class="w-20 h-[1px] bg-white"></div>
-        </div>
-        <img
-          src="https://via.placeholder.com/150"
-          alt="Categorie name"
-          class="w-20 h-20 rounded-lg"
-        />
-      </div>
-    </div>
+    <Carousel>
+      <CarouselContent class="w-[80%]">
+        <template v-if="isLoading">
+          <CarouselItem
+            v-for="n in 4"
+            :key="n"
+            class="md:basis-1/2 lg:basis-1/3 xl:basis-1/3 ml-9"
+          >
+            <div
+              class="flex p-4 justify-between dark:bg-charade-800 border border-charade-900 bg-charade-950 w-[360px] h-[110px] rounded-xl shrink-0"
+            >
+              <div class="flex flex-col justify-between flex-1 mr-4">
+                <div>
+                  <USkeleton class="h-4 w-20 mb-2" />
+                  <USkeleton class="h-6 w-32 mb-2" />
+                </div>
+                <USkeleton class="h-[1px] w-20" />
+              </div>
+              <USkeleton class="w-20 h-20 rounded-lg" />
+            </div>
+          </CarouselItem>
+        </template>
+        <template v-else>
+          <CarouselItem
+            v-for="category in topCategories"
+            :key="category.id"
+            class="md:basis-1/2 lg:basis-1/3 xl:basis-1/3 ml-9"
+          >
+            <div
+              class="flex p-4 justify-between cursor-pointer dark:bg-charade-800 border border-charade-900 hover:border-accent bg-charade-950 w-[360px] h-[110px] rounded-xl shrink-0"
+            >
+              <div>
+                <p class="text-white text-sm mb-2">{{ t("Category") }}</p>
+                <p class="text-white text-[16px] mb-2">
+                  {{ locale === "ru" ? category.nameRu : category.nameRo }}
+                </p>
+                <div class="w-20 h-[1px] bg-white"></div>
+              </div>
+              <img
+                :src="category.imagePath"
+                :alt="locale === 'ru' ? category.nameRu : category.nameRo"
+                class="w-20 h-20 rounded-lg object-cover"
+              />
+            </div>
+          </CarouselItem>
+        </template>
+      </CarouselContent>
+    </Carousel>
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
-const { t } = useI18n();
+const { t, locale } = useI18n();
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
+
+const topCategories = ref([]);
+const isLoading = ref(true);
+
+onMounted(async () => {
+  try {
+    const response = await fetch("/api/topCategory");
+    const data = await response.json();
+    if (data.success) {
+      topCategories.value = data.categories;
+    } else {
+      console.error("Failed to fetch top categories:", data.error);
+    }
+  } catch (error) {
+    console.error("Error fetching top categories:", error);
+  } finally {
+    isLoading.value = false;
+  }
+});
 </script>
 
-<style scoped>
-@media only screen and (max-width: 767px) {
-  .screenfullphone {
-    width: 100vw;
-  }
-}
-
-/* For tablet devices (768px to 1024px wide) */
-@media only screen and (min-width: 768px) and (max-width: 1024px) {
-  .screenfulltablet {
-    width: 100vw;
-  }
-}
-</style>
+<style scoped></style>
