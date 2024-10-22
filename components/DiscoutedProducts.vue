@@ -14,10 +14,20 @@
                     class="h-[200px] object-cover w-full md:h-[260px]"
             />
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            <template v-for="(product,index) in products" :key="index">
-                <ProductCardSmall :product="product" />
-            </template>
+        <div class="grid grid-cols-1 gap-4">
+            <Carousel>
+                <CarouselContent>
+                    <CarouselItem
+                        v-for="(product,index) in products"
+                        :key="index"
+                        class="md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
+                    >
+                        <ProductCardSmall :product="product" />
+                    </CarouselItem>
+                </CarouselContent>
+                <CarouselPrevious class="absolute -left-2" />
+                <CarouselNext class="absolute -right-2" />
+            </Carousel>
         </div>
     </div>
 </template>
@@ -26,6 +36,13 @@
 import { ref, computed, defineProps } from "vue";
 import { useI18n } from "vue-i18n";
 import { useFetch } from "#imports";
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious
+} from "@/components/ui/carousel";
 
 const { t, locale } = useI18n();
 

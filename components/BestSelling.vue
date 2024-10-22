@@ -5,9 +5,8 @@
         <h2 class="text-2xl font-bold mb-4">{{ t("Best Selling") }}</h2>
         <div class="block md:flex gap-4">
             <div
-                    class="w-full md:w-[400px] h-[300px] rounded-xl overflow-hidden mb-4"
+                    class="w-full md:w-[400px] h-[300px] rounded-xl overflow-hidden"
             >
-                <!-- Display the banner image -->
                 <img
                         :src="banner2Url"
                         alt="Discounted"
@@ -15,10 +14,20 @@
                         class="h-[300px] w-full md:w-[400px] object-cover"
                 />
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <template v-for="(product,index) in products" :key="index">
-                    <ProductCardSmall :product="product" />
-                </template>
+            <div class="grid grid-cols-1 gap-4">
+                <Carousel>
+                    <CarouselContent>
+                        <CarouselItem
+                            v-for="(product,index) in products"
+                            :key="index"
+                            class="md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
+                        >
+                            <ProductCardSmall :product="product" />
+                        </CarouselItem>
+                    </CarouselContent>
+                    <CarouselPrevious class="absolute -left-2" />
+                    <CarouselNext class="absolute -right-2" />
+                </Carousel>
             </div>
         </div>
     </div>
@@ -27,6 +36,13 @@
 <script setup>
 import { ref, onMounted,defineProps } from "vue";
 import { useI18n } from "vue-i18n";
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious,
+} from "@/components/ui/carousel";
 
 const { t, locale } = useI18n();
 const banner2Url = ref(null);

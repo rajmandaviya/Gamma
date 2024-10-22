@@ -69,16 +69,16 @@ onMounted(() => {
 
 <template>
   <div>
-    <div className="w-full flex mt-5">
-      <div className="hidden lg:block w-[460px]"></div>
-      <div className="w-full">
+    <div class="w-full flex mt-5">
+      <div class="hidden lg:block w-[460px]"></div>
+      <div class="w-full">
         <Slider />
       </div>
     </div>
     <TopCategory class="self-center" />
     <DiscoutedProducts :products="discountedProducts" :key="key" />
     <BestSelling :products="bestSellingProducts" :key="key" class="mt-10" />
-    <div className="rounded-2xl overflow-hidden mt-10">
+    <div class="rounded-2xl overflow-hidden mt-10">
       <img
         :src="banner3Url"
         alt="Gamma"

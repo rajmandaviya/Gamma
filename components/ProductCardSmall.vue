@@ -1,13 +1,13 @@
 <template>
   <div
-    v-if="productObject"
     class="product-card border hover:border-accent border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden dark:hover:border-accent hover:cursor-pointer relative py-2"
   >
     <UIcon name="i-ph:heart-fill" size="25" class="absolute top-2 left-2" />
     <img
-      :src="product.image"
+      :src="product.image ? product.image : `${baseUrl}/download/noco/pm6ki25nwijgjda/m1urcj8gi35hvr3/cvdhh4nrs88ygdx/logo_Kduho.svg`"
       :alt="product.name"
       class="w-full h-40 object-contain drop-shadow-2xl drop-shadow-img-product"
+      :class="product.image ? '' : '!w-20 m-auto'"
     />
     <div v-if="isFiftyPercentOff" class="badge">{{ t("50% off") }}</div>
     <div class="p-4">
