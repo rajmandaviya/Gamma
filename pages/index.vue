@@ -86,5 +86,8 @@ onMounted(() => {
         class="h-[200px] object-cover w-full md:h-[300px]"
       />
     </div>
+    <h1 class="text-xl mt-2 text-center">
+      {{ t("Pentru comenzile de peste 1000 de lei, livrarea este gratuită.") }}
+    </h1>
   </div>
 </template>

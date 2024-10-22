@@ -198,15 +198,7 @@ console.log(user);
           {{ t("Welcome") }}
         </h1>
         <div class="w-14 h-14 rounded-full overflow-hidden relative">
-          <img
-            v-if="!imageError"
-            :src="profileImage"
-            alt="Profile Image"
-            class="w-full h-full object-cover"
-            @error="imageError = true"
-          />
           <div
-            v-else
             class="w-full h-full bg-gray-300 flex items-center justify-center text-2xl font-bold text-gray-600"
           >
             {{ userInitials }}
