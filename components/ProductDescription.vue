@@ -1,61 +1,62 @@
 <script setup>
-import { ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-const { locale } = useI18n();
+import {ref} from 'vue';
+import {useI18n} from 'vue-i18n';
+
+const {locale} = useI18n();
 
 const props = defineProps({
-  product: { type: Object, required: true },
-  productVariant: { required: true },
+    product: {type: Object, required: true},
+    productVariant: {required: true},
 });
-const { product, productVariant } = props;
+const {product, productVariant} = props;
 
 const getProductName = () => {
-  return locale.value === 'ru'
-    ? product.Nume_Produs_RU
-    : product.Nume_Produs_RO;
+    return locale.value === 'ru'
+        ? product?.Nume_Produs_RU
+        : product?.Nume_Produs_RO;
 };
 const getProductDesc = () => {
-  return locale.value === 'ru'
-    ? product.Descriere_Produs_RU
-    : product.Descriere_Produs_RO;
+    return locale.value === 'ru'
+        ? product?.Descriere_Produs_RU
+        : product?.Descriere_Produs_RO;
 };
 
 const variantName = ref(getProductName());
 
 watch(
-  () => productVariant,
-  () => {
-    if (productVariant.value) {
-      if (productVariant.value.Varianta) {
-        variantName.value = productVariant.value.Varianta;
-        return;
-      }
-    }
-    if (productVariant.Varianta) {
-      variantName.value = productVariant.Varianta;
-      return;
-    }
-    variantName.value = getProductName();
-  },
-  { deep: true, immediate: true }
+    () => productVariant,
+    () => {
+        if (productVariant.value) {
+            if (productVariant.value.Varianta) {
+                variantName.value = productVariant.value.Varianta;
+                return;
+            }
+        }
+        if (productVariant.Varianta) {
+            variantName.value = productVariant.Varianta;
+            return;
+        }
+        variantName.value = getProductName();
+    },
+    {deep: true, immediate: true}
 );
 </script>
 
 <template>
-  <ul class="ml-24">
-    <li class="text=[#333333] font-semibold text-4xl pb-14">
-      <h1>{{ variantName }}</h1>
-    </li>
-    <li class="border-t py-16">
-      <p class="text-[#4D4D4D] font-normal text-base">{{ getProductDesc() }}</p>
-    </li>
-    <li class="border-t"></li>
-    <li class="border-t w-full pt-8">
-      <button
-        class="w-full bg-[#121535] py-5 text-white text-base font-medium shadow-xl rounded-lg"
-      >
-        Cumpara cu un click
-      </button>
-    </li>
-  </ul>
+    <ul class="ml-24">
+        <li class="text=[#333333] font-semibold text-4xl pb-14">
+            <h1>{{ variantName }}</h1>
+        </li>
+        <li class="border-t py-16">
+            <p class="text-[#4D4D4D] font-normal text-base">{{ getProductDesc() }}</p>
+        </li>
+        <li class="border-t"></li>
+        <li class="border-t w-full pt-8">
+            <button
+                    class="w-full bg-[#121535] py-5 text-white text-base font-medium shadow-xl rounded-lg"
+            >
+                Cumpara cu un click
+            </button>
+        </li>
+    </ul>
 </template>
