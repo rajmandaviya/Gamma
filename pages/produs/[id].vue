@@ -28,7 +28,7 @@ onMounted(() => {
   <h1>Produs Id: {{ productId }}</h1>
 
   <!-- BIG MAIN -->
-  <div class="flex">
+  <div class="flex flex-col lg:flex-row">
     <!-- Product Primary abd Secondary Images -->
     <ProductImage
       :key="key"
@@ -41,16 +41,15 @@ onMounted(() => {
       :key="key"
       :product="product.product"
       :product-variant="variantProduct"
-    />
-
-    <!-- Delivery -->
+    >
+      <!-- Select Variants -->
+      <template v-if="product?.variants?.length > 0">
+        <ProductVariants
+          :key="key"
+          :variants="product.variants"
+          :variant-product="variantProduct"
+        />
+      </template>
+    </ProductDescription>
   </div>
-  <!-- Select Variants -->
-  <template v-if="product?.variants?.length > 0">
-    <ProductVariants
-      :key="key"
-      :variants="product.variants"
-      :variant-product="variantProduct"
-    />
-  </template>
 </template>
