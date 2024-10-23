@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1 class="text-2xl font-bold mt-6 mb-6">
-      {{ formatCategoryName(subsubcategoryId.split("_")[0]) }}
+      {{ subsubcategoryName }}
     </h1>
 
     <div
@@ -28,7 +28,7 @@
 
 <script setup>
 import { useRoute } from "vue-router";
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import slugify from "slugify";
 
@@ -38,6 +38,7 @@ const products = ref([]);
 const status = ref("pending");
 const route = useRoute();
 const subsubcategoryId = route.params.subsubcategorySlug;
+const subsubcategoryNames = ref({});
 
 // Function to format category name from slug
 const formatCategoryName = (slug) => {
@@ -46,6 +47,22 @@ const formatCategoryName = (slug) => {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 };
+
+// Computed property for subsubcategory name
+const subsubcategoryName = computed(() => {
+  if (locale.value === "ro") {
+    return (
+      subsubcategoryNames.value.Nume_SubSubCategorie_RO ||
+      formatCategoryName(subsubcategoryId.split("_")[0])
+    );
+  } else if (locale.value === "ru") {
+    return (
+      subsubcategoryNames.value.Nume_SubSubCategorie_RU ||
+      formatCategoryName(subsubcategoryId.split("_")[0])
+    );
+  }
+  return formatCategoryName(subsubcategoryId.split("_")[0]);
+});
 
 // Function to fetch products
 const fetchProducts = async () => {
@@ -62,6 +79,20 @@ const fetchProducts = async () => {
   } else {
     products.value = data.value.products;
     status.value = "success";
+  }
+};
+
+// Function to fetch subsubcategory names
+const fetchSubsubcategoryNames = async () => {
+  const subsubcategoryIdValue = subsubcategoryId.split("_")[1];
+  const { data, error } = await useFetch(
+    `/api/catNames/subsubcat?id=${subsubcategoryIdValue}`
+  );
+
+  if (error.value) {
+    console.error("Error fetching subsubcategory names:", error.value);
+  } else {
+    subsubcategoryNames.value = data.value;
   }
 };
 
@@ -82,7 +113,13 @@ const getProductName = (product) => {
     : product.Nume_Produs_RO;
 };
 
-await fetchProducts();
+// Fetch data
+await Promise.all([fetchProducts(), fetchSubsubcategoryNames()]);
 
-watch(() => route.params.subsubcategorySlug, fetchProducts);
+watch(
+  () => route.params.subsubcategorySlug,
+  async () => {
+    await Promise.all([fetchProducts(), fetchSubsubcategoryNames()]);
+  }
+);
 </script>
