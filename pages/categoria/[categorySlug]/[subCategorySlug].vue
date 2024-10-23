@@ -1,17 +1,19 @@
 <template>
   <div>
-    <h1>Subcategory: {{ subcategorySlug }}</h1>
+    <h1 class="text-2xl font-bold mt-6">
+      {{ formatCategoryName(subcategorySlug.split("_")[0]) }}
+    </h1>
     <Carousel
-      class="relative w-full px-10 py-8"
+      class="relative w-full px-0 py-8"
       :opts="{
         align: 'start',
       }"
     >
-      <CarouselContent class="p-8">
+      <CarouselContent class="p-0">
         <CarouselItem
           v-for="subSubcategory in subSubCategories"
           :key="subSubcategory.id"
-          class="md:basis-1/2 lg:basis-1/3 xl:basis-1/5"
+          class="md:basis-1/2 lg:basis-1/3 xl:basis-1/6"
         >
           <SubSubCategoryCard
             :sub-sub-category="subSubcategory"
@@ -19,8 +21,8 @@
           />
         </CarouselItem>
       </CarouselContent>
-      <CarouselPrevious class="absolute -left-2" />
-      <CarouselNext class="absolute -right-2" />
+      <CarouselPrevious class="absolute -left-10" />
+      <CarouselNext class="absolute -right-10" />
     </Carousel>
   </div>
 </template>
@@ -42,6 +44,13 @@ const subSubCategories = ref([]);
 const route = useRoute();
 const subcategorySlug = route.params.subCategorySlug;
 
+const formatCategoryName = (slug) => {
+  return slug
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
+
 const { data } = await useFetch(
   `/api/subCategories?categoryId=${route.params.categorySlug.split("_")[1]}`
 );
@@ -50,7 +59,3 @@ let res = data.value.data.filter(
 );
 subSubCategories.value = res[0].subSubcategories;
 </script>
-
-<style scoped>
-/* Add styles */
-</style>

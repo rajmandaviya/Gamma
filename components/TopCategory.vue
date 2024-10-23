@@ -32,6 +32,7 @@
             class="md:basis-1/2 lg:basis-1/3 xl:basis-1/3 ml-9"
           >
             <div
+              @click="navigateToCategory(category)"
               class="flex p-4 justify-between cursor-pointer dark:bg-charade-800 border border-charade-900 hover:border-accent bg-charade-950 w-[360px] h-[110px] rounded-xl shrink-0"
             >
               <div>
@@ -57,7 +58,11 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
+import { useRouter } from "vue-router";
+import slugify from "slugify";
 const { t, locale } = useI18n();
+const router = useRouter();
+
 import {
   Carousel,
   CarouselContent,
@@ -66,6 +71,18 @@ import {
 
 const topCategories = ref([]);
 const isLoading = ref(true);
+
+const navigateToCategory = (category) => {
+  if (!category.mainCategory) return;
+
+  const mainCategorySlug = `${slugify(category.mainCategory.nameRo)}_${
+    category.mainCategory.id
+  }`;
+  const subCategorySlug = `${slugify(category.nameRo)}_${category.id}`;
+  const langPrefix = locale.value === "ru" ? "/ru" : "";
+  const url = `${langPrefix}/categoria/${mainCategorySlug}/${subCategorySlug}`;
+  router.push(url);
+};
 
 onMounted(async () => {
   try {

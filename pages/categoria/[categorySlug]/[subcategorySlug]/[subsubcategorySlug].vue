@@ -1,20 +1,34 @@
 <template>
-  <h1>Subsubcategory: {{ subsubcategoryId }}</h1>
+  <div>
+    <h1 class="text-2xl font-bold mt-6 mb-6">
+      {{ formatCategoryName(subsubcategoryId.split("_")[0]) }}
+    </h1>
 
-  <div v-if="status === 'pending'">Loading...</div>
-  <ul
-    v-else
-    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
-  >
-    <li v-for="product in products" :key="product.id">
-      <MainProductCard :product="product" />
-    </li>
-  </ul>
+    <div
+      v-if="status === 'pending'"
+      class="flex justify-center items-center min-h-[200px]"
+    >
+      <div class="text-lg text-gray-600">Loading...</div>
+    </div>
+
+    <div v-else-if="status === 'error'" class="text-red-600">
+      Failed to load products. Please try again.
+    </div>
+
+    <ul
+      v-else
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+    >
+      <li v-for="product in products" :key="product.id">
+        <MainProductCard :product="product" />
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script setup>
 import { useRoute } from "vue-router";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import slugify from "slugify";
 
@@ -25,9 +39,17 @@ const status = ref("pending");
 const route = useRoute();
 const subsubcategoryId = route.params.subsubcategorySlug;
 
+// Function to format category name from slug
+const formatCategoryName = (slug) => {
+  return slug
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
+
 // Function to fetch products
 const fetchProducts = async () => {
-  status.value = "pending"; // Set loading state
+  status.value = "pending";
   const subsubcategoryIdValue = subsubcategoryId.split("_")[1];
 
   const { data, error } = await useFetch(
@@ -64,5 +86,3 @@ await fetchProducts();
 
 watch(() => route.params.subsubcategorySlug, fetchProducts);
 </script>
-
-<style scoped></style>
