@@ -5,18 +5,33 @@ export default defineEventHandler(async (event) => {
 
   try {
     const { rows } = await pool.query(
-      'SELECT * FROM public."nc_pka4___SubCategorii" WHERE "Top_Categorii" = TRUE'
+      `SELECT 
+        sub.*,
+        cat.id as cat_id,
+        cat."Nume_Categorie_RO" as cat_name_ro,
+        cat."Nume_Categorie_RU" as cat_name_ru
+      FROM public."nc_pka4___SubCategorii" sub
+      LEFT JOIN public."nc_pka4___Categorii" cat
+      ON sub."nc_pka4___Categorii_id" = cat.id
+      WHERE sub."Top_Categorii" = TRUE`
     );
 
-    const topCategories = rows.map((topCategory) => {
-      const images = JSON.parse(topCategory.Images);
+    const topCategories = rows.map((row) => {
+      const images = JSON.parse(row.Images);
       const imagePath = images[0]?.path || "";
 
       return {
-        id: topCategory.id,
-        nameRo: topCategory.Nume_SubCategorie_RO,
-        nameRu: topCategory.Nume__SubCategorie_RU,
+        id: row.id,
+        nameRo: row.Nume_SubCategorie_RO,
+        nameRu: row.Nume__SubCategorie_RU,
         imagePath: `${baseUrl}/${imagePath}`,
+        mainCategory: row.cat_id
+          ? {
+              id: row.cat_id,
+              nameRo: row.cat_name_ro,
+              nameRu: row.cat_name_ru,
+            }
+          : null,
       };
     });
 

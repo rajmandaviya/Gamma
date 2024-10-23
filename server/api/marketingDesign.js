@@ -8,7 +8,7 @@ let marketingCache = {
 const cacheDuration = 3600 * 1000;
 
 export default defineEventHandler(async (event) => {
-  const NUXT_BASE_URL = process.env.NUXT_BASE_URL || "http://localhost";
+  const NUXT_BASE_URL = process.env.NUXT_BASE_URL;
   const currentTime = Date.now();
 
   try {

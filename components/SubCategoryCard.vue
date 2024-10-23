@@ -17,20 +17,6 @@ const { subcategory } = props;
 
 const imageLoaded = ref(false);
 
-// const getSubcategoryName = (subcategory) => {
-//   return locale.value === "ru"
-//     ? slugify(subcategory.subcategory_name_ru, {
-//         replacement: "-",
-//         lower: true,
-//         strict: true,
-//       })
-//     : slugify(subcategory.subcategory_name_ro, {
-//         replacement: "-",
-//         lower: true,
-//         strict: true,
-//       });
-// };
-
 const getName = (subcategory) => {
   return locale.value === "ru"
     ? subcategory.subcategory_name_ru
