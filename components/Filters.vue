@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/accordion";
 </script>
 <template>
+    <p>Filters: <span><i><u>TODO</u></i></span></p>
     <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="item-1">
             <AccordionTrigger>Is it accessible?</AccordionTrigger>
