@@ -1,7 +1,7 @@
 <template>
   <div class="flex mt-10 gap-4">
     <div
-      class="w-[70%] p-6 border-gray-200 dark:border-gray-700 dark:bg-charade-900 rounded-lg bg-gray-100"
+      class="w-[100%] md-[70%] p-6 border-gray-200 dark:border-gray-700 dark:bg-charade-900 rounded-lg bg-gray-100"
     >
       <h1 class="font-semibold text-3xl mb-6">{{ t("Contacteza-ne") }}</h1>
       <form @submit.prevent class="space-y-4">
@@ -73,7 +73,7 @@
     </div>
 
     <div
-      class="flex border border-gray-200 dark:border-gray-700 h-96 w-[30%] rounded-xl p-6 gap-2 items-center justify-center"
+      class="hidden md:flex border border-gray-200 dark:border-gray-700 h-96 w-[30%] rounded-xl p-6 gap-2 items-center justify-center"
     >
       <div>
         <h1 class="font-semibold text-3xl mb-6">{{ t("Contacte") }}</h1>
