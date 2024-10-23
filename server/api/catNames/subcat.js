@@ -20,12 +20,7 @@ export default defineEventHandler(async (event) => {
     `;
     const values = [id];
 
-    console.log("Executing query:", sqlQuery);
-    console.log("With values:", values);
-
     const result = await pool.query(sqlQuery, values);
-
-    console.log("Query result:", result.rows);
 
     if (result.rows.length === 0) {
       throw createError({
@@ -39,13 +34,6 @@ export default defineEventHandler(async (event) => {
       Nume_SubCategorie_RU: result.rows[0].Nume__SubCategorie_RU, // Note the double underscore
     };
   } catch (error) {
-    console.error("Error fetching subcategory names:", error);
-    console.error("Error details:", {
-      message: error.message,
-      code: error.code,
-      stack: error.stack,
-    });
-
     throw createError({
       statusCode: 500,
       statusMessage: "Internal Server Error",

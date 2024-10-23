@@ -9,10 +9,10 @@
           <CarouselItem
             v-for="n in 4"
             :key="n"
-            class="md:basis-1/2 lg:basis-1/3 xl:basis-1/3 ml-9"
+            class="md:basis-1/2 lg:basis-1/3 xl:basis-1/3 ml-12"
           >
             <div
-              class="flex p-4 justify-between dark:bg-charade-800 border border-charade-900 bg-charade-950 w-[360px] h-[110px] rounded-xl shrink-0"
+              class="flex p-4 justify-between dark:bg-charade-800 border border-charade-900 bg-charade-950 w-[340px] h-[110px] rounded-xl shrink-0"
             >
               <div class="flex flex-col justify-between flex-1 mr-4">
                 <div>
@@ -29,11 +29,11 @@
           <CarouselItem
             v-for="category in topCategories"
             :key="category.id"
-            class="md:basis-1/2 lg:basis-1/3 xl:basis-1/3 ml-9"
+            class="md:basis-1/2 lg:basis-1/2 xl:basis-1/3 ml-12"
           >
             <div
               @click="navigateToCategory(category)"
-              class="flex p-4 justify-between cursor-pointer dark:bg-charade-800 border border-charade-900 hover:border-accent bg-charade-950 w-[360px] h-[110px] rounded-xl shrink-0"
+              class="flex p-4 justify-between cursor-pointer dark:bg-charade-800 border border-charade-900 hover:border-accent bg-charade-950 w-[340px] h-[110px] rounded-xl shrink-0"
             >
               <div>
                 <p class="text-white text-sm mb-2">{{ t("Category") }}</p>

@@ -54,8 +54,8 @@ watchEffect(() => {
 });
 
 const userInitials = computed(() => {
-  if (userData.value?.Nume && userData.value?.Prenume) {
-    return (userData.value.Nume[0] + userData.value.Prenume[0]).toUpperCase();
+  if (userData.value?.Nume) {
+    return userData.value.Nume[0].toUpperCase();
   }
   return user.value?.firstName?.[0]?.toUpperCase() || "";
 });

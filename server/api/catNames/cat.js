@@ -31,12 +31,6 @@ export default defineEventHandler(async (event) => {
 
     return result.rows[0];
   } catch (error) {
-    console.error("Error fetching category names:", error);
-    console.error("Error details:", {
-      message: error.message,
-      code: error.code,
-      stack: error.stack,
-    });
     throw createError({
       statusCode: 500,
       statusMessage: "Internal Server Error",
