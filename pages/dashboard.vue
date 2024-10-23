@@ -22,7 +22,7 @@
     <!-- Profile Tab -->
     <div
       v-if="selectedTab === 'profile'"
-      class="p-6 dark:bg-charade-900 rounded-lg bg-gray-100"
+      class="p-6 border-gray-200 dark:border-gray-700 dark:bg-charade-900 rounded-lg bg-gray-100"
     >
       <h2 class="text-xl font-semibold mb-4 dark:text-white text-gray-700">
         {{ t("Profile Information") }}
