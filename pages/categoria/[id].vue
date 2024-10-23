@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1 class="text-3xl font-bold mt-6">
-      {{ formatCategoryName(categoryId[0]) }}
+      {{ categoryName }}
     </h1>
 
     <Carousel
@@ -37,15 +37,31 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
+import { useI18n } from "vue-i18n";
 
 const subcategories = ref([]);
+const categoryNames = ref({});
 
 const route = useRoute();
 const categoryId = route.params.id.split("_");
+const { locale } = useI18n();
 
 console.log(categoryId);
+
+const categoryName = computed(() => {
+  if (locale.value === "ro") {
+    return (
+      categoryNames.value.Nume_Categorie_RO || formatCategoryName(categoryId[0])
+    );
+  } else if (locale.value === "ru") {
+    return (
+      categoryNames.value.Nume_Categorie_RU || formatCategoryName(categoryId[0])
+    );
+  }
+  return formatCategoryName(categoryId[0]);
+});
 
 const formatCategoryName = (slug) => {
   return slug
@@ -54,6 +70,13 @@ const formatCategoryName = (slug) => {
     .join(" ");
 };
 
+// Fetch category names
+const { data: catData } = await useFetch(
+  `/api/catNames/cat?id=${categoryId[1]}`
+);
+categoryNames.value = catData.value;
+
+// Fetch subcategories
 const { data } = await useFetch(
   `/api/subCategories?categoryId=${categoryId[1]}`
 );
