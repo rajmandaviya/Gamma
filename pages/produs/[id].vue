@@ -47,8 +47,12 @@ onMounted(() => {
         <!-- Delivery -->
     </div>
   <!-- Select Variants -->
-  <!--  <ProductVariants-->
-  <!--    :variants="product.variants"-->
-  <!--    :variant-product="variantProduct"-->
-  <!--  />-->
+    <template v-if="product?.variants?.length > 0">
+        <ProductVariants
+            :key="key"
+            :variants="product.variants"
+            :variant-product="variantProduct"
+        />
+    </template>
+
 </template>
