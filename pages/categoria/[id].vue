@@ -14,7 +14,7 @@
         <CarouselItem
           v-for="subcategory in subcategories.data"
           :key="subcategory.id"
-          class="md:basis-1/2 lg:basis-1/3 xl:basis-1/6"
+          class="md:basis-1/3 lg:basis-1/3 xl:basis-1/6"
         >
           <SubCategoryCard
             :categoryId="categoryId[1]"
@@ -23,8 +23,8 @@
           />
         </CarouselItem>
       </CarouselContent>
-      <CarouselPrevious class="absolute -left-10" />
-      <CarouselNext class="absolute -right-10" />
+      <CarouselPrevious class="absolute -left-4 md:-left-10" />
+      <CarouselNext class="absolute -right-4 md:-right-10" />
     </Carousel>
   </div>
 </template>

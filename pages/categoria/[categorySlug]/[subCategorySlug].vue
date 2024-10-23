@@ -21,8 +21,8 @@
           />
         </CarouselItem>
       </CarouselContent>
-      <CarouselPrevious class="absolute -left-10" />
-      <CarouselNext class="absolute -right-10" />
+      <CarouselPrevious class="absolute -left-4 md:-left-10" />
+      <CarouselNext class="absolute -right-4 md:-right-10" />
     </Carousel>
   </div>
 </template>

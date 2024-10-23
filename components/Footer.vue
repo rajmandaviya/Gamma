@@ -63,7 +63,7 @@
             }}
           </p>
           <!-- Contact Links -->
-          <a href="tel:+40723456789" class="flex items-center gap-2">
+          <a href="tel:+079867092" class="flex items-center gap-2">
             <div
               class="flex relative bg-accent p-2 rounded-full w-[40px] h-[40px] items-center justify-center"
             >

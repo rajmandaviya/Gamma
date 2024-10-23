@@ -40,7 +40,6 @@ export default defineEventHandler(async (event) => {
       categories: topCategories,
     };
   } catch (error) {
-    console.error("Database query error:", error);
     return {
       success: false,
       error: error.message || "Failed to fetch topCategories",
