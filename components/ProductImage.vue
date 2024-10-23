@@ -40,7 +40,7 @@ watch(
                 :ui="{ item: 'basis-1/4' }"
                 class="flex gap-2"
         >
-            <div class="p-2 border m-2 rounded-lg" @click="primaryImage = item">
+            <div class="p-2 border-2 border-gray-500 m-2 rounded-lg" @click="image = item">
                 <img :src="item" alt="" class="m-1 aspect-square object-cover"/>
             </div>
         </UCarousel>

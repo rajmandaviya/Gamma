@@ -43,20 +43,40 @@ watch(
 </script>
 
 <template>
-    <ul class="ml-24">
-        <li class="text=[#333333] font-semibold text-4xl pb-14">
+    <ul class="lg:ml-24">
+        <li class="text=[#333333] font-semibold text-4xl">
             <h1>{{ variantName }}</h1>
         </li>
-        <li class="border-t py-16">
+        <li class="border-t py-8">
             <p class="text-[#4D4D4D] font-normal text-base">{{ getProductDesc() }}</p>
         </li>
-        <li class="border-t"></li>
+        <li v-if="product?.Pret_Redus && product?.Pret_Standard > product?.Pret_Redus" class="flex items-center">
+            <img src="assets/img/percent.png" class="w-8 h-8 mr-2" alt="discount" />
+            <span class="text-red-500 mr-2">
+                - {{(((product?.Pret_Standard - product?.Pret_Redus) / product?.Pret_Standard) * 100).toFixed(2)}} %
+            </span>
+            <span class="font-bold">
+                {{product?.Pret_Redus}} Lei
+            </span>
+            <s class="ml-5 text-gray-500">{{product?.Pret_Standard}} Lei</s>
+        </li>
+        <li v-else class="font-bold">
+            {{product?.Pret_Standard}} Lei
+        </li>
+        <slot></slot>
         <li class="border-t w-full pt-8">
             <button
-                    class="w-full bg-[#121535] py-5 text-white text-base font-medium shadow-xl rounded-lg"
+                    class="w-full flex justify-center items-center bg-[#121535] py-3 text-white text-base font-medium shadow-xl rounded-lg"
             >
-                Cumpara cu un click
+                <span>
+                    Cumpara cu un click
+                </span>
+                <img src="assets/img/img.png" class="h-4 w-4" alt="">
             </button>
+        </li>
+        <li class="mt-8">
+            <img src="assets/img/Payments.png" alt="" class="w-52">
+
         </li>
     </ul>
 </template>
