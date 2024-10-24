@@ -125,11 +125,9 @@ function onImageLoad(index: number) {
           >
             <CardContent class="relative p-0 h-full">
               <div class="w-full h-full">
-                <Skeleton
-                  v-show="!carouselLoaded || !imagesLoaded[index]"
-                  class="w-full h-full rounded-lg absolute inset-0"
-                />
+                  <Skeleton class="h-96 w-full rounded-lg" v-if="!carouselLoaded || !imagesLoaded[index]" />
                 <img
+                  v-else
                   :src="img"
                   :alt="`Product Image ${index + 1}`"
                   class="product-image w-full h-full object-cover rounded-lg transition-opacity duration-300"
