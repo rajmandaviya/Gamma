@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 
 const { locale } = useI18n();
+const { t } = useI18n();
 
 const props = defineProps({
   product: { type: Object, required: true },
@@ -76,12 +77,21 @@ watch(
     <li v-else class="font-bold">{{ product?.Pret_Standard }} Lei</li>
     <slot></slot>
     <li class="border-t w-full pt-8">
-      <button
-        class="w-full flex justify-center items-center bg-[#121535] py-3 text-white text-base font-medium shadow-xl rounded-lg"
-      >
-        <span> Cumpara cu un click </span>
-        <img src="assets/img/img.png" class="h-4 w-4" alt="" />
-      </button>
+      <div class="flex justify-center items-center">
+        <button
+          class="dark:bg-gray-500 bg-gray-600 dark:hover:bg-charade-900 hover:bg-charade-900 py-[8px] text-white text-sm font-semibold px-4 rounded-lg hover:bg-accent-dark flex items-center justify-center content-center w-full"
+        >
+          {{ t("buy now") }}
+          <UIcon class="ml-2" name="i-ph:cursor-click" size="30" />
+        </button>
+
+        <UIcon
+          class="ml-2 hover:text-accent"
+          name="i-ph:shopping-cart"
+          size="35"
+          @click="addToCart(product)"
+        />
+      </div>
     </li>
     <li class="mt-8">
       <img src="assets/img/Payments.png" alt="" class="w-64" />
