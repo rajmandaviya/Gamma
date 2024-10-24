@@ -10,7 +10,7 @@
       <UIcon name="i-ph:caret-down-bold" class="ml-2" size="20" />
     </button>
 
-    <transition name="fade">
+    <transition name="fade" @before-leave="beforeLeave">
       <div
         v-if="isDropdownOpen"
         class="dropdown-menu absolute flex dark:bg-charade-950 bg-white border rounded-b-xl border-accent dark:border-accentz-10 overflow-hidden z-10"
@@ -125,6 +125,11 @@ const toggleDropdown = () => {
       });
     }
   }
+};
+
+const beforeLeave = (el) => {
+  el.style.transition = "none";
+  el.style.opacity = 0;
 };
 
 watch(locale, (newLocale) => {
