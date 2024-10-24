@@ -36,31 +36,34 @@ function onThumbClick(index: number) {
   emblaMainApi.value.scrollTo(index);
 }
 
+watchOnce(emblaMainApi, (emblaMainApi) => {
+  if (!emblaMainApi) return;
+
+  onSelect();
+  emblaMainApi.on("select", onSelect);
+  emblaMainApi.on("reInit", onSelect);
+});
+
 watch(
   () => productVariant,
   (newProductVariant) => {
     if (newProductVariant && typeof newProductVariant === "object") {
-      if (
-        "Imagini" in newProductVariant &&
-        Array.isArray(newProductVariant.Imagini)
-      ) {
-        image.value = newProductVariant.Imagini[0] || "";
-        allImages.value = newProductVariant.Imagini;
+      if (productVariant?.value) {
+        if (productVariant.value?.Imagini?.length > 0) {
+          image.value = productVariant.value?.Imagini?.[0];
+          return;
+        } else {
+          image.value = product?.Imagine_Principala?.[0] || "";
+        }
       } else {
-        image.value = product?.Imagine_Principala?.[0] || "";
-        allImages.value = [
-          ...(product?.Imagine_Principala || []),
-          ...(product?.imagini_Secundare || []),
-        ];
+        if (productVariant?.Imagini?.length > 0) {
+          image.value = productVariant?.Imagini?.[0];
+        } else {
+          image.value = product?.Imagine_Principala?.[0] || "";
+        }
       }
-    } else {
-      image.value = product?.Imagine_Principala?.[0] || "";
-      allImages.value = [
-        ...(product?.Imagine_Principala || []),
-        ...(product?.imagini_Secundare || []),
-      ];
     }
-    imagesLoaded.value = {};
+    // variantName.value = getProductName();
   },
   { deep: true, immediate: true }
 );
