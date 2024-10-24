@@ -60,7 +60,10 @@ import { useRuntimeConfig } from "#imports";
 
 const { t, locale } = useI18n();
 const props = defineProps({
-  product: Object,
+  product: {
+      type : Object,
+      default : {}
+  },
 });
 const config = useRuntimeConfig();
 const baseUrl = config.public.baseURL;
