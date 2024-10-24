@@ -32,7 +32,21 @@ export const checkQuieries = (variants, q) => {
 
   return {};
 };
-export const useFilter = (variants, variantProduct) => {
+
+
+export const queryVariants = (variants, q) => {
+  // Filter the variants based on the non-null query parameters
+  return variants.filter((v) => {
+    return (
+        ((q.color ? v.Cod_Culoare === q.color : true) &&
+        (q.var_1 ? v.Valoare_Atribute_1 === q.var_1 : true) &&
+        (q.var_2 ? v.Valoare_Atribute_2 === q.var_2 : true)) &&
+            parseInt(v?.Stock) > 0
+    );
+  });
+};
+
+export const useFilter = (variants, variantProduct, availableProducts) => {
   const { locale } = useI18n();
   const router = useRouter();
   const { path, query: q } = useRoute();
@@ -95,7 +109,9 @@ export const useFilter = (variants, variantProduct) => {
   //   };
   //   router.push({ path, query: query.value });
   // });
-
+  onMounted(()=>{
+    availableProducts.value = queryVariants(variants, query.value);
+  })
   watch(
     [() => color.value, () => var_1.value, () => var_2.value],
     () => {
@@ -108,6 +124,7 @@ export const useFilter = (variants, variantProduct) => {
       router.push({ path, query: query.value });
       // console.log(variantProduct.value);
       variantProduct.value = checkQuieries(variants, query.value);
+      availableProducts.value = queryVariants(variants, query.value);
     },
     { deep: true }
   );
@@ -130,6 +147,7 @@ export const useFilter = (variants, variantProduct) => {
     getAttr1name,
     getAttr2name,
     checkQuieries,
+    queryVariants,
     changeColor,
   };
 };
