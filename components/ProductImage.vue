@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
@@ -10,10 +10,9 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Skeleton } from "@/components/ui/skeleton";
-import { watchOnce } from "@vueuse/core";
 
 const props = defineProps({
-  product: { type: Object, required: true, default: {} },
+  product: { type: Object, required: true, default: () => ({}) },
   productVariant: { required: true },
 });
 const { product, productVariant } = props;
@@ -23,26 +22,19 @@ const emblaThumbnailApi = ref<CarouselApi>();
 const selectedIndex = ref(0);
 
 const image = ref(product?.Imagine_Principala?.[0] || "");
-const imagesLoaded = ref(false);
+const imagesLoaded = ref<Record<number, boolean>>({});
+const allImages = ref<string[]>([]);
 
 function onSelect() {
   if (!emblaMainApi.value || !emblaThumbnailApi.value) return;
   selectedIndex.value = emblaMainApi.value.selectedScrollSnap();
-  emblaThumbnailApi.value.scrollTo(emblaMainApi.value.selectedScrollSnap());
+  emblaThumbnailApi.value.scrollTo(selectedIndex.value);
 }
 
 function onThumbClick(index: number) {
-  if (!emblaMainApi.value || !emblaThumbnailApi.value) return;
+  if (!emblaMainApi.value) return;
   emblaMainApi.value.scrollTo(index);
 }
-
-watchOnce(emblaMainApi, (emblaMainApi) => {
-  if (!emblaMainApi) return;
-
-  onSelect();
-  emblaMainApi.on("select", onSelect);
-  emblaMainApi.on("reInit", onSelect);
-});
 
 watch(
   () => productVariant,
@@ -53,78 +45,66 @@ watch(
         Array.isArray(newProductVariant.Imagini)
       ) {
         image.value = newProductVariant.Imagini[0] || "";
-        return;
+        allImages.value = newProductVariant.Imagini;
+      } else {
+        image.value = product?.Imagine_Principala?.[0] || "";
+        allImages.value = [
+          ...(product?.Imagine_Principala || []),
+          ...(product?.imagini_Secundare || []),
+        ];
       }
+    } else {
+      image.value = product?.Imagine_Principala?.[0] || "";
+      allImages.value = [
+        ...(product?.Imagine_Principala || []),
+        ...(product?.imagini_Secundare || []),
+      ];
     }
-    image.value = product?.Imagine_Principala?.[0] || "";
+    imagesLoaded.value = {};
   },
   { deep: true, immediate: true }
 );
 
-function onAllImagesLoaded() {
-  imagesLoaded.value = true;
-}
-
-function checkImagesLoaded() {
-  const images = document.querySelectorAll("img");
-  let loadedCount = 0;
-  images.forEach((img) => {
-    if (img.complete) loadedCount++;
-  });
-  if (loadedCount === images.length) {
-    onAllImagesLoaded();
+onMounted(() => {
+  if (emblaMainApi.value) {
+    emblaMainApi.value.on("select", onSelect);
+    emblaMainApi.value.on("reInit", onSelect);
   }
+});
+
+function onImageLoad(index: number) {
+  imagesLoaded.value[index] = true;
 }
 </script>
 
 <template>
   <div class="w-full max-w-3xl mx-auto">
     <!-- Main Carousel -->
-    <Carousel
-      class="w-full sm:max-w-xl mx-auto mb-4"
-      @init-api="(val) => (emblaMainApi = val)"
-    >
+    <Carousel class="mx-auto mb-4" @init-api="(api) => (emblaMainApi = api)">
       <CarouselContent>
-        <CarouselItem>
-          <Card
-            class="bg-white dark:bg-charade-950 border-gray-200 dark:border-charade-700"
-          >
-            <CardContent class="relative aspect-square p-0">
-              <div class="w-full h-full">
-                <Skeleton
-                  v-if="!imagesLoaded"
-                  class="w-full h-full rounded-lg"
-                />
-                <img
-                  :src="image"
-                  alt="Main Product Image"
-                  class="h-full w-full object-cover rounded-lg"
-                  @load="checkImagesLoaded"
-                  :class="{ hidden: !imagesLoaded }"
-                />
-              </div>
-            </CardContent>
-          </Card>
-        </CarouselItem>
         <CarouselItem
-          v-for="(item, index) in product?.imagini_Secundare"
+          v-for="(img, index) in allImages"
           :key="index"
+          class="!duration-0 !transition-none"
         >
           <Card
-            class="bg-white dark:bg-charade-950 border-gray-200 dark:border-charade-700"
+            class="bg-white dark:bg-charade-950 border-gray-200 dark:border-charade-700 w-full aspect-square"
           >
-            <CardContent class="relative aspect-square p-0">
+            <CardContent class="relative p-0 h-full">
               <div class="w-full h-full">
                 <Skeleton
-                  v-if="!imagesLoaded"
-                  class="w-full h-full rounded-lg"
+                  v-show="!imagesLoaded[index]"
+                  class="w-full h-full rounded-lg absolute inset-0"
                 />
                 <img
-                  :src="item"
-                  alt=""
-                  class="h-full w-full object-cover rounded-lg"
-                  @load="checkImagesLoaded"
-                  :class="{ hidden: !imagesLoaded }"
+                  :src="img"
+                  :alt="`Product Image ${index + 1}`"
+                  class="product-image w-full h-full object-cover rounded-lg transition-opacity duration-300"
+                  :class="{
+                    'opacity-0': !imagesLoaded[index],
+                    'opacity-100': imagesLoaded[index],
+                  }"
+                  @load="onImageLoad(index)"
                 />
               </div>
             </CardContent>
@@ -138,45 +118,17 @@ function checkImagesLoaded() {
     <!-- Thumbnail Carousel -->
     <Carousel
       class="w-full sm:max-w-xl mx-auto"
-      @init-api="(val) => (emblaThumbnailApi = val)"
+      @init-api="(api) => (emblaThumbnailApi = api)"
     >
       <CarouselContent class="flex gap-2">
         <CarouselItem
-          class="basis-1/4 min-w-0 cursor-pointer pl-0"
-          @click="onThumbClick(0)"
-        >
-          <div :class="[0 === selectedIndex ? 'opacity-100' : 'opacity-50']">
-            <Card
-              class="bg-white dark:bg-charade-950 border-gray-200 dark:border-charade-700"
-            >
-              <CardContent class="relative aspect-square p-2">
-                <div class="w-full h-full">
-                  <Skeleton
-                    v-if="!imagesLoaded"
-                    class="w-full h-full rounded-lg"
-                  />
-                  <img
-                    :src="image"
-                    alt="Main Product Image Thumbnail"
-                    class="h-full w-full object-cover rounded-lg"
-                    @load="checkImagesLoaded"
-                    :class="{ hidden: !imagesLoaded }"
-                  />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </CarouselItem>
-        <CarouselItem
-          v-for="(item, index) in product?.imagini_Secundare"
+          v-for="(img, index) in allImages"
           :key="index"
-          class="basis-1/4 min-w-0 cursor-pointer pl-0"
-          @click="onThumbClick(index + 1)"
+          class="basis-1/4 min-w-0 cursor-pointer pl-0 !duration-0 !transition-none"
+          @click="onThumbClick(index)"
         >
           <div
-            :class="[
-              index + 1 === selectedIndex ? 'opacity-100' : 'opacity-50',
-            ]"
+            :class="[index === selectedIndex ? 'opacity-100' : 'opacity-50']"
           >
             <Card
               class="bg-white dark:bg-charade-950 border-gray-200 dark:border-charade-700"
@@ -184,15 +136,18 @@ function checkImagesLoaded() {
               <CardContent class="relative aspect-square p-2">
                 <div class="w-full h-full">
                   <Skeleton
-                    v-if="!imagesLoaded"
-                    class="w-full h-full rounded-lg"
+                    v-show="!imagesLoaded[index]"
+                    class="w-full h-full rounded-lg absolute inset-0"
                   />
                   <img
-                    :src="item"
-                    alt=""
-                    class="h-full w-full object-cover rounded-lg"
-                    @load="checkImagesLoaded"
-                    :class="{ hidden: !imagesLoaded }"
+                    :src="img"
+                    :alt="`Thumbnail ${index + 1}`"
+                    class="product-image w-full h-full object-cover rounded-lg transition-opacity duration-300"
+                    :class="{
+                      'opacity-0': !imagesLoaded[index],
+                      'opacity-100': imagesLoaded[index],
+                    }"
+                    @load="onImageLoad(index)"
                   />
                 </div>
               </CardContent>

@@ -9,19 +9,19 @@
           <CarouselItem
             v-for="n in 4"
             :key="n"
-            class="md:basis-1/2 lg:basis-1/3 xl:basis-1/3 ml-12"
+            class="md:basis-1/2 lg:basis-1/2 xl:basis-1/3 ml-12"
           >
             <div
               class="flex p-4 justify-between dark:bg-charade-800 border border-charade-900 bg-charade-950 w-[340px] h-[110px] rounded-xl shrink-0"
             >
               <div class="flex flex-col justify-between flex-1 mr-4">
                 <div>
-                  <USkeleton class="h-4 w-20 mb-2" />
-                  <USkeleton class="h-6 w-32 mb-2" />
+                  <Skeleton class="h-4 w-20 mb-2" />
+                  <Skeleton class="h-6 w-32 mb-2" />
                 </div>
-                <USkeleton class="h-[1px] w-20" />
+                <Skeleton class="h-[1px] w-20" />
               </div>
-              <USkeleton class="w-20 h-20 rounded-lg" />
+              <Skeleton class="w-20 h-20 rounded-lg" />
             </div>
           </CarouselItem>
         </template>
@@ -42,11 +42,13 @@
                 </p>
                 <div class="w-20 h-[1px] bg-white"></div>
               </div>
-              <img
-                :src="category.imagePath"
-                :alt="locale === 'ru' ? category.nameRu : category.nameRo"
-                class="w-20 h-20 rounded-lg object-cover"
-              />
+              <div class="w-20 h-20 flex items-center justify-center">
+                <img
+                  :src="category.imagePath"
+                  :alt="locale === 'ru' ? category.nameRu : category.nameRo"
+                  class="max-w-full max-h-full w-auto h-auto object-contain rounded-lg"
+                />
+              </div>
             </div>
           </CarouselItem>
         </template>
@@ -68,6 +70,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const topCategories = ref([]);
 const isLoading = ref(true);

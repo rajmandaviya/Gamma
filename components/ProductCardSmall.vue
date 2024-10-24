@@ -9,13 +9,12 @@
       <img
         v-else
         :alt="product.name"
-        :class="product.image ? '' : '!w-20 m-auto'"
+        :class="product.image ? 'product-image' : 'default-image'"
         :src="
           product.image
             ? product.image
             : `${baseUrl}/download/noco/pm6ki25nwijgjda/m1urcj8gi35hvr3/cvdhh4nrs88ygdx/logo_Kduho.svg`
         "
-        class="w-full h-40 object-contain drop-shadow-2xl drop-shadow-img-product"
       />
     </div>
     <div v-if="!loading && isFiftyPercentOff" class="badge">
@@ -25,25 +24,30 @@
       <Skeleton v-if="loading" class="h-6 w-3/4" />
       <h2 v-else class="text-lg font-semibold">{{ product.name }}</h2>
       <div class="flex justify-between">
-        <Skeleton v-if="loading" class="h-6 w-20" />
-        <Skeleton v-if="loading" class="h-6 w-20" />
-        <span
-          v-else
-          :class="{ 'strikethrough text-gray-500': product.discount }"
-          class="text-lg font"
-        >
-          {{ product.price }} lei
-        </span>
-        <span
-          v-if="!loading && product.discount"
-          class="text-lg font-semibold text-red-500"
-        >
-          {{ product.discount }} lei
-        </span>
+        <template v-if="loading">
+          <Skeleton class="h-6 w-20" />
+          <Skeleton class="h-6 w-20" />
+        </template>
+        <template v-else>
+          <span
+            :class="{ 'strikethrough text-gray-500': product.discount }"
+            class="text-lg font"
+          >
+            {{ product.price }} lei
+          </span>
+          <span
+            v-if="product.discount"
+            class="text-lg font-semibold text-red-500"
+          >
+            {{ product.discount }} lei
+          </span>
+        </template>
       </div>
       <div class="flex items-center gap-2">
-        <Skeleton v-if="loading" class="h-10 w-full" />
-        <Skeleton v-if="loading" class="h-10 w-10" />
+        <template v-if="loading">
+          <Skeleton class="h-10 w-full" />
+          <Skeleton class="h-10 w-10" />
+        </template>
         <template v-else>
           <button
             class="dark:bg-gray-500 bg-gray-600 dark:hover:bg-charade-900 hover:bg-charade-900 py-[2px] text-white text-sm font-semibold px-4 rounded-lg hover:bg-accent-dark flex items-center justify-center content-center w-full"
@@ -140,6 +144,19 @@ const isFiftyPercentOff = computed(() => {
 .product-card {
   max-width: 100%;
   position: relative;
+}
+
+.product-image {
+  max-width: 100%;
+  max-height: 160px; /* Matches the container height */
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.default-image {
+  width: 80px;
+  height: auto;
 }
 
 .drop-shadow-img-product {

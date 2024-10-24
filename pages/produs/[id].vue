@@ -27,7 +27,6 @@ onMounted(() => {
   <div class="my-10">
     <!-- BIG MAIN -->
     <div class="flex flex-col lg:flex-row">
-      <!-- Product Primary abd Secondary Images -->
       <ProductImage
         :key="key"
         :product="product.product"
