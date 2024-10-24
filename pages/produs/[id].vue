@@ -18,6 +18,10 @@ const getProduct = async () => {
   variantProduct.value = checkQuieries(product.value.variants, query.value);
   key.value += 1;
 };
+const hasNoProducts = ref(false)
+const updateAvailability = (value)=>{
+    hasNoProducts.value = value
+}
 onMounted(() => {
   getProduct();
 });
@@ -37,7 +41,9 @@ onMounted(() => {
       <!-- Product Desc -->
       <ProductDescription
         :key="key"
+        :hasNoProducts="hasNoProducts"
         :product="product.product"
+        :hasVariants="product?.variants?.length > 0"
         :product-variant="variantProduct"
         class="lg:w-[50%]"
       >
@@ -45,6 +51,7 @@ onMounted(() => {
         <template v-if="product?.variants?.length > 0">
           <ProductVariants
             :key="key"
+            @productsNotAvailable="updateAvailability"
             :variants="product.variants"
             :variant-product="variantProduct"
           />

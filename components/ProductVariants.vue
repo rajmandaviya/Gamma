@@ -1,10 +1,12 @@
 <script setup>
-import {watch} from "vue";
+import {watch, defineEmits} from "vue";
 import { useFilter } from '~/composables/useFilter.js';
 const { variants, variantProduct } = defineProps({
   variants: { type: Object, required: true },
   variantProduct: { type: Object, required: true, default: {} },
 });
+const emits = defineEmits(['productsNotAvailable']);
+
 
 const availableProducts = ref([])
 
@@ -38,6 +40,11 @@ const isAvailable = (value) => {
     }
 };
 watch(availableProducts,(n)=>{
+    if (n?.length === 0){
+        emits('productsNotAvailable',true)
+    }else {
+        emits('productsNotAvailable',false)
+    }
     key.value +=1
 })
 </script>

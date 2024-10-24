@@ -8,8 +8,10 @@ const { t } = useI18n();
 const props = defineProps({
   product: { type: Object, required: true, default: {} },
   productVariant: { required: true },
+  hasNoProducts : {type : Boolean, default: false},
+  hasVariants : {type : Boolean, default: true},
 });
-const { product, productVariant } = props;
+const { product, productVariant, hasNoProducts, hasVariants } = props;
 
 const getProductName = () => {
   return locale.value === "ru"
@@ -78,6 +80,7 @@ watch(
       <div class="flex justify-center items-center">
         <button
           class="dark:bg-gray-500 bg-gray-600 dark:hover:bg-charade-900 hover:bg-charade-900 py-[8px] text-white text-sm font-semibold px-4 rounded-lg hover:bg-accent-dark flex items-center justify-center content-center w-full"
+          :class="props.hasNoProducts || !props.hasVariants ? 'disabled' : ''"
         >
           {{ t("buy now") }}
           <UIcon class="ml-2" name="i-ph:cursor-click" size="30" />
