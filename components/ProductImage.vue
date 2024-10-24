@@ -76,6 +76,7 @@ watch(
               class="flex aspect-square items-center justify-center p-0"
             >
               <img
+                v-if="image"
                 :src="image"
                 alt="Main Product Image"
                 class="h-full w-full object-cover rounded-lg"
@@ -124,6 +125,7 @@ watch(
                 class="flex aspect-square items-center justify-center p-2"
               >
                 <img
+                  v-if="image"
                   :src="image"
                   alt="Main Product Image Thumbnail"
                   class="h-full w-full object-cover rounded-lg"
