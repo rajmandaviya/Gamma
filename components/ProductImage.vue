@@ -13,7 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { watchOnce } from "@vueuse/core";
 
 const props = defineProps({
-  product: { type: Object, required: true },
+  product: { type: Object, required: true, default: {} },
   productVariant: { required: true },
 });
 const { product, productVariant } = props;

@@ -6,7 +6,7 @@ const { locale } = useI18n();
 const { t } = useI18n();
 
 const props = defineProps({
-  product: { type: Object, required: true },
+  product: { type: Object, required: true, default: {} },
   productVariant: { required: true },
 });
 const { product, productVariant } = props;
@@ -27,13 +27,13 @@ const variantName = ref(getProductName());
 watch(
   () => productVariant,
   () => {
-    if (productVariant.value) {
+    if (productVariant?.value) {
       if (productVariant.value.Varianta) {
         variantName.value = productVariant.value.Varianta;
         return;
       }
     }
-    if (productVariant.Varianta) {
+    if (productVariant?.Varianta) {
       variantName.value = productVariant.Varianta;
       return;
     }
