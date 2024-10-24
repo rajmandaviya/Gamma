@@ -67,7 +67,6 @@ watch(
 
       if (productVariant?.value){
           if (productVariant.value && typeof productVariant.value === "object") {
-              console.log('found as object')
               if (
                   "Imagini" in productVariant.value &&
                   Array.isArray(productVariant.value?.Imagini)
