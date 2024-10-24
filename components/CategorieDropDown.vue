@@ -114,9 +114,11 @@ const calculateDropdownHeight = () => {
 const toggleDropdown = () => {
   if (!isHomePage.value) {
     if (isDropdownOpen.value) {
-      dropdownHeight.value = 0;
       dropdownOpacity.value = 0;
-      isDropdownOpen.value = false;
+      setTimeout(() => {
+        dropdownHeight.value = 0;
+        isDropdownOpen.value = false;
+      }, 300);
     } else {
       isDropdownOpen.value = true;
       nextTick(() => {
