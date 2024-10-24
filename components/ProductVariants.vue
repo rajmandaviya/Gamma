@@ -68,7 +68,7 @@ watch(availableProducts,(n)=>{
 <template>
     <div class="flex flex-wrap gap-8 mt-10 items-start">
         <!-- Attribute 1 Section -->
-        <div class="w-full sm:w-auto">
+        <div class="w-full sm:w-auto" v-if="getAttr1name()">
             <h1 class="text-lg font-semibold my-2">
                 {{ getAttr1name() }}:
                 <span class="uppercase font-medium">{{ var_1 }}</span>
@@ -76,8 +76,9 @@ watch(availableProducts,(n)=>{
             <div v-for="(v, index) in varsAttr1" :key="index" class="mt-3 inline-block">
         <span
                 @click="var_1 = v"
-                class="uppercase mr-1 border-2 border-gray-500 p-1 rounded cursor-pointer hover:border-black transition-colors"
+                class="uppercase mr-1 border-2 border-gray-500 py-1 px-2 rounded cursor-pointer hover:border-black transition-colors"
                 :class="!isAvailable(v) && var_1 === null ? 'strikethrough disabled' : ''"
+                :style="{ border: v === var_1 ? '3px solid black' : '' }"
         >
           {{ v }}
         </span>
@@ -85,7 +86,7 @@ watch(availableProducts,(n)=>{
         </div>
 
         <!-- Attribute 2 Section -->
-        <div class="w-full sm:w-auto">
+        <div class="w-full sm:w-auto" v-if="getAttr2name()">
             <h1 class="text-lg font-semibold my-2">
                 {{ getAttr2name() }}:
                 <span class="uppercase font-medium">{{ var_2 }}</span>
@@ -96,6 +97,7 @@ watch(availableProducts,(n)=>{
                 :key="key"
                 class="uppercase mr-1 border-2 border-gray-500 p-1 rounded cursor-pointer hover:border-black transition-colors"
                 :class="!isAvailable(v) && var_2 === null ? 'strikethrough disabled' : ''"
+                :style="{ border: v === var_2 ? '3px solid black' : '' }"
         >
           {{ v }}
         </span>
