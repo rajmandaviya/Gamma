@@ -24,6 +24,7 @@ const selectedIndex = ref(0);
 const image = ref(product?.Imagine_Principala?.[0] || "");
 const imagesLoaded = ref<Record<number, boolean>>({});
 const allImages = ref<string[]>([]);
+const carouselLoaded = ref(false);
 
 function onSelect() {
   if (!emblaMainApi.value || !emblaThumbnailApi.value) return;
@@ -36,34 +37,32 @@ function onThumbClick(index: number) {
   emblaMainApi.value.scrollTo(index);
 }
 
-watchOnce(emblaMainApi, (emblaMainApi) => {
-  if (!emblaMainApi) return;
-
-  onSelect();
-  emblaMainApi.on("select", onSelect);
-  emblaMainApi.on("reInit", onSelect);
-});
-
 watch(
   () => productVariant,
   (newProductVariant) => {
     if (newProductVariant && typeof newProductVariant === "object") {
-      if (productVariant?.value) {
-        if (productVariant.value?.Imagini?.length > 0) {
-          image.value = productVariant.value?.Imagini?.[0];
-          return;
-        } else {
-          image.value = product?.Imagine_Principala?.[0] || "";
-        }
+      if (
+        "Imagini" in newProductVariant &&
+        Array.isArray(newProductVariant.Imagini)
+      ) {
+        image.value = newProductVariant.Imagini[0] || "";
+        allImages.value = newProductVariant.Imagini;
       } else {
-        if (productVariant?.Imagini?.length > 0) {
-          image.value = productVariant?.Imagini?.[0];
-        } else {
-          image.value = product?.Imagine_Principala?.[0] || "";
-        }
+        image.value = product?.Imagine_Principala?.[0] || "";
+        allImages.value = [
+          ...(product?.Imagine_Principala || []),
+          ...(product?.imagini_Secundare || []),
+        ];
       }
+    } else {
+      image.value = product?.Imagine_Principala?.[0] || "";
+      allImages.value = [
+        ...(product?.Imagine_Principala || []),
+        ...(product?.imagini_Secundare || []),
+      ];
     }
-    // variantName.value = getProductName();
+    imagesLoaded.value = {};
+    carouselLoaded.value = false;
   },
   { deep: true, immediate: true }
 );
@@ -72,6 +71,9 @@ onMounted(() => {
   if (emblaMainApi.value) {
     emblaMainApi.value.on("select", onSelect);
     emblaMainApi.value.on("reInit", onSelect);
+    emblaMainApi.value.on("init", () => {
+      carouselLoaded.value = true;
+    });
   }
 });
 
@@ -83,7 +85,7 @@ function onImageLoad(index: number) {
 <template>
   <div class="w-full max-w-3xl mx-auto">
     <!-- Main Carousel -->
-    <Carousel class="mx-auto mb-4" @init-api="(api) => (emblaMainApi = api)">
+    <Carousel class="mx-automb-4" @init-api="(api) => (emblaMainApi = api)">
       <CarouselContent>
         <CarouselItem
           v-for="(img, index) in allImages"
@@ -96,7 +98,7 @@ function onImageLoad(index: number) {
             <CardContent class="relative p-0 h-full">
               <div class="w-full h-full">
                 <Skeleton
-                  v-show="!imagesLoaded[index]"
+                  v-show="!carouselLoaded || !imagesLoaded[index]"
                   class="w-full h-full rounded-lg absolute inset-0"
                 />
                 <img
@@ -104,8 +106,8 @@ function onImageLoad(index: number) {
                   :alt="`Product Image ${index + 1}`"
                   class="product-image w-full h-full object-cover rounded-lg transition-opacity duration-300"
                   :class="{
-                    'opacity-0': !imagesLoaded[index],
-                    'opacity-100': imagesLoaded[index],
+                    'opacity-0': !carouselLoaded || !imagesLoaded[index],
+                    'opacity-100': carouselLoaded && imagesLoaded[index],
                   }"
                   @load="onImageLoad(index)"
                 />
@@ -139,7 +141,7 @@ function onImageLoad(index: number) {
               <CardContent class="relative aspect-square p-2">
                 <div class="w-full h-full">
                   <Skeleton
-                    v-show="!imagesLoaded[index]"
+                    v-show="!carouselLoaded || !imagesLoaded[index]"
                     class="w-full h-full rounded-lg absolute inset-0"
                   />
                   <img
@@ -147,8 +149,8 @@ function onImageLoad(index: number) {
                     :alt="`Thumbnail ${index + 1}`"
                     class="product-image w-full h-full object-cover rounded-lg transition-opacity duration-300"
                     :class="{
-                      'opacity-0': !imagesLoaded[index],
-                      'opacity-100': imagesLoaded[index],
+                      'opacity-0': !carouselLoaded || !imagesLoaded[index],
+                      'opacity-100': carouselLoaded && imagesLoaded[index],
                     }"
                     @load="onImageLoad(index)"
                   />

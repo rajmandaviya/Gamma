@@ -26,11 +26,12 @@ onMounted(() => {
 <template>
   <div class="my-10">
     <!-- BIG MAIN -->
-    <div class="flex flex-col lg:flex-row">
+    <div class="flex flex-col lg:flex-row gap-10">
       <ProductImage
         :key="key"
         :product="product.product"
         :product-variant="variantProduct"
+        class="lg:w-[50%]"
       />
 
       <!-- Product Desc -->
@@ -38,6 +39,7 @@ onMounted(() => {
         :key="key"
         :product="product.product"
         :product-variant="variantProduct"
+        class="lg:w-[50%]"
       >
         <!-- Select Variants -->
         <template v-if="product?.variants?.length > 0">

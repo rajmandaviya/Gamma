@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
-
+import { Skeleton } from "@/components/ui/skeleton";
 const { locale } = useI18n();
 const { t } = useI18n();
 
@@ -29,15 +29,12 @@ watch(
   () => {
     if (productVariant?.value) {
       if (productVariant.value?.Varianta) {
-        // variantName.value = productVariant.value.Varianta;
         return;
       }
     }
     if (productVariant?.Varianta) {
-      // variantName.value = productVariant.Varianta;
       return;
     }
-    // variantName.value = getProductName();
   },
   { deep: true, immediate: true }
 );
@@ -60,6 +57,7 @@ watch(
           name="i-ph:seal-percent-fill"
           class="w-8 h-8 mr-2 text-red-500"
         />
+
         <span class="text-red-500 mr-2 text-xl">
           -
           {{
