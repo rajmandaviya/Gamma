@@ -60,8 +60,6 @@ const route = useRoute();
 const categoryId = route.params.id.split("_");
 const { locale } = useI18n();
 
-console.log(categoryId);
-
 const categoryName = computed(() => {
   if (locale.value === "ro") {
     return (

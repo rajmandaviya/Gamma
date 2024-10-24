@@ -75,7 +75,7 @@ watch(
             </button>
         </li>
         <li class="mt-8">
-            <img src="assets/img/Payments.png" alt="" class="w-52">
+            <img src="assets/img/Payments.png" alt="" class="w-64">
 
         </li>
     </ul>
