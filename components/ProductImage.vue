@@ -42,21 +42,29 @@ watchOnce(emblaMainApi, (emblaMainApi) => {
   emblaMainApi.on("reInit", onSelect);
 });
 
+
 watch(
-  () => productVariant,
-  (newProductVariant) => {
-    if (newProductVariant && typeof newProductVariant === "object") {
-      if (
-        "Imagini" in newProductVariant &&
-        Array.isArray(newProductVariant.Imagini)
-      ) {
-        image.value = newProductVariant.Imagini[0] || "";
-        return;
-      }
-    }
-    image.value = product?.Imagine_Principala?.[0] || "";
-  },
-  { deep: true, immediate: true }
+    () => productVariant,
+    (newProductVariant) => {
+        if (newProductVariant && typeof newProductVariant === "object") {
+            if (productVariant?.value) {
+                if (productVariant.value?.Imagini?.length > 0) {
+                    image.value = productVariant.value?.Imagini?.[0]
+                    return;
+                } else {
+                    image.value = product?.Imagine_Principala?.[0] || "";
+                }
+            }else{
+                if (productVariant?.Imagini?.length > 0) {
+                    image.value = productVariant?.Imagini?.[0]
+                } else {
+                    image.value = product?.Imagine_Principala?.[0] || "";
+                }
+            }
+        }
+        // variantName.value = getProductName();
+    },
+    { deep: true, immediate: true }
 );
 </script>
 

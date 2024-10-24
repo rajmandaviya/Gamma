@@ -42,9 +42,9 @@ export const useFilter = (variants, variantProduct) => {
   const varsAttr1 = ref([]);
   const varsAttr2 = ref([]);
 
-  const color = ref(null);
-  const var_1 = ref(null);
-  const var_2 = ref(null);
+  const color = ref(query.value.color ??null);
+  const var_1 = ref(query.value.var_1 ?? null);
+  const var_2 = ref(query.value.var_2 ?? null);
 
   // SETTERS
   const setColors = () => {

@@ -73,20 +73,6 @@ setVarsAttr2();
                 </li>
             </ul>
         </div>
-
-        <!-- Variants Section -->
-        <div class="flex gap-2 w-full flex-wrap">
-            <ul class="flex gap-2 flex-wrap">
-                <li v-for="(v, index) in variants" :key="index">
-                    <img
-                            v-if="v?.Imagini?.[0]"
-                            :src="v?.Imagini?.[0]"
-                            alt="variant"
-                            class="w-16 h-16 object-cover rounded"
-                    />
-                </li>
-            </ul>
-        </div>
     </div>
 </template>
 

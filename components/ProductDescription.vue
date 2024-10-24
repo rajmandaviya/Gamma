@@ -28,16 +28,16 @@ watch(
   () => productVariant,
   () => {
     if (productVariant?.value) {
-      if (productVariant.value.Varianta) {
-        variantName.value = productVariant.value.Varianta;
+      if (productVariant.value?.Varianta) {
+        // variantName.value = productVariant.value.Varianta;
         return;
       }
     }
     if (productVariant?.Varianta) {
-      variantName.value = productVariant.Varianta;
+      // variantName.value = productVariant.Varianta;
       return;
     }
-    variantName.value = getProductName();
+    // variantName.value = getProductName();
   },
   { deep: true, immediate: true }
 );
