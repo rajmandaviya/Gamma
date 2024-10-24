@@ -36,17 +36,18 @@ function onThumbClick(index: number) {
   if (!emblaMainApi.value) return;
   emblaMainApi.value.scrollTo(index);
 }
-
 watch(
   () => productVariant,
   (newProductVariant) => {
+      // RElOAD CASE
     if (newProductVariant && typeof newProductVariant === "object") {
       if (
         "Imagini" in newProductVariant &&
-        Array.isArray(newProductVariant.Imagini)
+        Array.isArray(newProductVariant?.Imagini)
       ) {
-        image.value = newProductVariant.Imagini[0] || "";
-        allImages.value = newProductVariant.Imagini;
+
+        image.value = newProductVariant?.Imagini[0] || "";
+        allImages.value = newProductVariant?.Imagini;
       } else {
         image.value = product?.Imagine_Principala?.[0] || "";
         allImages.value = [
@@ -61,8 +62,36 @@ watch(
         ...(product?.imagini_Secundare || []),
       ];
     }
-    imagesLoaded.value = {};
-    carouselLoaded.value = false;
+
+    // CHANGE CASE
+
+      if (productVariant?.value){
+          if (productVariant.value && typeof productVariant.value === "object") {
+              console.log('found as object')
+              if (
+                  "Imagini" in productVariant.value &&
+                  Array.isArray(productVariant.value?.Imagini)
+              ) {
+
+                  image.value = productVariant.value?.Imagini[0] || "";
+                  allImages.value = productVariant.value?.Imagini;
+              } else {
+                  image.value = product?.Imagine_Principala?.[0] || "";
+                  allImages.value = [
+                      ...(product?.Imagine_Principala || []),
+                      ...(product?.imagini_Secundare || []),
+                  ];
+              }
+          } else {
+              image.value = product?.Imagine_Principala?.[0] || "";
+              allImages.value = [
+                  ...(product?.Imagine_Principala || []),
+                  ...(product?.imagini_Secundare || []),
+              ];
+          }
+      }
+    // imagesLoaded.value = {};
+    // carouselLoaded.value = false;
   },
   { deep: true, immediate: true }
 );
@@ -119,8 +148,6 @@ function onImageLoad(index: number) {
       <CarouselPrevious class="hidden sm:flex" />
       <CarouselNext class="hidden sm:flex" />
     </Carousel>
-
-    <!-- Thumbnail Carousel -->
     <Carousel
       class="w-full sm:max-w-xl mx-auto"
       @init-api="(api) => (emblaThumbnailApi = api)"
