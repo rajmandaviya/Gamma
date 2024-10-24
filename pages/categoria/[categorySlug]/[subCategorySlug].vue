@@ -24,6 +24,16 @@
       <CarouselPrevious class="absolute -left-4 md:-left-10" />
       <CarouselNext class="absolute -right-4 md:-right-10" />
     </Carousel>
+      <div class="grid grid-cols-12">
+          <div class="col-span-3">
+              <Filters></Filters>
+          </div>
+          <div class="col-span-9">
+              <div v-for="product in products" class="inline-flex">
+                  <ProductCardSmall :product="product" class="m-2"></ProductCardSmall>
+              </div>
+          </div>
+      </div>
   </div>
 </template>
 
@@ -39,10 +49,11 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import axios from "axios";
 
 const subSubCategories = ref([]);
 const subcategoryNames = ref({});
-
+const products = ref([])
 const route = useRoute();
 const subcategorySlug = route.params.subCategorySlug;
 const { locale } = useI18n();
@@ -70,8 +81,8 @@ const subcategoryName = computed(() => {
 });
 
 // Fetch subcategory names
+const subcategoryId = subcategorySlug.split("_")[1];
 const fetchSubcategoryNames = async () => {
-  const subcategoryId = subcategorySlug.split("_")[1];
   const { data, error } = await useFetch(
     `/api/catNames/subcat?id=${subcategoryId}`
   );
@@ -95,4 +106,16 @@ const fetchSubSubCategories = async () => {
 
 // Fetch data
 await Promise.all([fetchSubcategoryNames(), fetchSubSubCategories()]);
+
+const fetchProducts = async () => {
+    const res = await axios.get(`/api/productsBySubCategoryId?id=${subcategoryId}`)
+    if (res?.data?.success){
+        products.value = res?.data?.products
+    }
+}
+
+onMounted(()=>{
+    fetchProducts()
+})
+
 </script>

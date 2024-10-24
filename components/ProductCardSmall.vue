@@ -92,7 +92,24 @@ const isFiftyPercentOff = computed(() => {
   return (originalPrice - discountPrice) / originalPrice >= 0.5;
 });
 </script>
+<style>
+.strikethrough {
+    position: relative;
+    display: inline-block;
+}
 
+.strikethrough::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: gray;
+    transform: rotate(-10deg);
+    transform-origin: center;
+}
+</style>
 <style scoped>
 .product-card {
   max-width: 100%;
@@ -101,23 +118,6 @@ const isFiftyPercentOff = computed(() => {
 
 .drop-shadow-img-product {
   filter: drop-shadow(0px 0px 3px #84848c);
-}
-
-.strikethrough {
-  position: relative;
-  display: inline-block;
-}
-
-.strikethrough::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background-color: gray;
-  transform: rotate(-10deg);
-  transform-origin: center;
 }
 
 .badge {

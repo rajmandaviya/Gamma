@@ -56,7 +56,7 @@ const addToCart = (product) => {};
       />
     </NuxtLink>
 
-    <div v-if="isFiftyPercentOff" class="badge">{{ t('50% off') }}</div>
+    <div v-if="isFiftyPercentOff" class="badge">{{ $t('50% off') }}</div>
     <div class="p-4">
       <NuxtLink :to="generateProductLink()">
         <div class="flex-col justify-between items-center">
