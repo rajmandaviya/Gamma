@@ -80,30 +80,30 @@
         <!-- Contact Links -->
         <a href="tel:+079867092" class="flex items-center gap-2 mb-4">
           <div
-            class="flex relative bg-accent p-2 rounded-full w-[40px] h-[40px] items-center justify-center"
+            class="flex relative bg-accent p-2 rounded-full w-[35px] h-[35px] items-center justify-center"
           >
             <UIcon name="i-ph:phone-call" class="text-white" size="30" />
           </div>
-          <p class="text-gray-500">079867092</p>
+          <p class="text-gray-500 text-sm">079867092</p>
         </a>
         <a href="mailto:support@gamma.md" class="flex items-center gap-2 mb-4">
           <div
-            class="flex bg-accent p-2 rounded-full w-[40px] h-[40px] items-center justify-center"
+            class="flex bg-accent p-2 rounded-full w-[35px] h-[35px] items-center justify-center"
           >
             <UIcon name="i-ph:envelope" class="text-white" size="30" />
           </div>
-          <p class="text-gray-500">info@gamma.md</p>
+          <p class="text-gray-500 text-sm">info@gamma.md</p>
         </a>
         <a
           href="https://www.google.com/maps/search/?api=1&query=Strada+Sfîntul+Gheorghe+6,+Chișinău,+Moldova"
           class="flex items-center gap-2 mb-4"
         >
           <div
-            class="flex bg-accent p-2 rounded-full w-[40px] h-[40px] items-center justify-center"
+            class="flex bg-accent p-2 rounded-full w-[35px] h-[35px] items-center justify-center"
           >
             <UIcon name="i-ph:map-pin" class="text-white" size="30" />
           </div>
-          <p class="text-gray-500">
+          <p class="text-gray-500 text-sm">
             Strada Sfîntul Gheorghe 6, Chișinău, Moldova
           </p>
         </a>

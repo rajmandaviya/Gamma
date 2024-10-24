@@ -86,14 +86,14 @@ watch(
         </button>
 
         <UIcon
-          class="ml-2 hover:text-accent"
+          class="ml-2 hover:text-accent cursor-pointer"
           name="i-ph:shopping-cart"
           size="35"
           @click="addToCart(product)"
         />
       </div>
     </li>
-    <li class="mt-8">
+    <li class="flex mt-8 bg-gray-100 rounded-lg p-1 justify-center">
       <img src="assets/img/Payments.png" alt="" class="w-64" />
     </li>
   </ul>

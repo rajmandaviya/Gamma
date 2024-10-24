@@ -42,7 +42,7 @@
         </button>
 
         <UIcon
-          class="ml-2 hover:text-accent"
+          class="ml-2 hover:text-accent cursor-pointer"
           name="i-ph:shopping-cart"
           size="35"
           @click="addToCart(product)"
@@ -94,20 +94,20 @@ const isFiftyPercentOff = computed(() => {
 </script>
 <style>
 .strikethrough {
-    position: relative;
-    display: inline-block;
+  position: relative;
+  display: inline-block;
 }
 
 .strikethrough::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: 100%;
-    height: 1px;
-    background-color: gray;
-    transform: rotate(-10deg);
-    transform-origin: center;
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: gray;
+  transform: rotate(-10deg);
+  transform-origin: center;
 }
 </style>
 <style scoped>
