@@ -60,7 +60,7 @@ watch(
           name="i-ph:seal-percent-fill"
           class="w-8 h-8 mr-2 text-red-500"
         />
-        <span class="text-red-500 mr-2">
+        <span class="text-red-500 mr-2 text-xl">
           -
           {{
             (

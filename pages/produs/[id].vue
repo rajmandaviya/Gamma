@@ -3,7 +3,6 @@ import { useRoute } from "vue-router";
 import { ref } from "vue";
 import { checkQuieries } from "~/composables/useFilter";
 import axios from "axios";
-// import { useFilter } from '~/composables/useFilter';
 
 const product = ref({});
 const variantProduct = ref({});
@@ -25,31 +24,31 @@ onMounted(() => {
 </script>
 
 <template>
-  <h1>Produs Id: {{ productId }}</h1>
+  <div class="my-10">
+    <!-- BIG MAIN -->
+    <div class="flex flex-col lg:flex-row">
+      <!-- Product Primary abd Secondary Images -->
+      <ProductImage
+        :key="key"
+        :product="product.product"
+        :product-variant="variantProduct"
+      />
 
-  <!-- BIG MAIN -->
-  <div class="flex flex-col lg:flex-row">
-    <!-- Product Primary abd Secondary Images -->
-    <ProductImage
-      :key="key"
-      :product="product.product"
-      :product-variant="variantProduct"
-    />
-
-    <!-- Product Desc -->
-    <ProductDescription
-      :key="key"
-      :product="product.product"
-      :product-variant="variantProduct"
-    >
-      <!-- Select Variants -->
-      <template v-if="product?.variants?.length > 0">
-        <ProductVariants
-          :key="key"
-          :variants="product.variants"
-          :variant-product="variantProduct"
-        />
-      </template>
-    </ProductDescription>
+      <!-- Product Desc -->
+      <ProductDescription
+        :key="key"
+        :product="product.product"
+        :product-variant="variantProduct"
+      >
+        <!-- Select Variants -->
+        <template v-if="product?.variants?.length > 0">
+          <ProductVariants
+            :key="key"
+            :variants="product.variants"
+            :variant-product="variantProduct"
+          />
+        </template>
+      </ProductDescription>
+    </div>
   </div>
 </template>

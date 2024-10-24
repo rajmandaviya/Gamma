@@ -1,52 +1,63 @@
 <template>
   <div
-    class="product-card border hover:border-accent border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden dark:hover:border-accent hover:cursor-pointer relative py-2"
-    @click="$router.push(`/produs/${product.slug}_${product.id}`)"
+    class="product-card border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden py-2 p-4 space-y-4"
+    :class="{ 'hover:border-accent hover:cursor-pointer': !loading }"
+    @click="!loading && $router.push(`/produs/${product.slug}_${product.id}`)"
   >
-    <UIcon class="absolute top-2 left-2" name="i-ph:heart-fill" size="25" />
-    <img
-      :alt="product.name"
-      :class="product.image ? '' : '!w-20 m-auto'"
-      :src="
-        product.image
-          ? product.image
-          : `${baseUrl}/download/noco/pm6ki25nwijgjda/m1urcj8gi35hvr3/cvdhh4nrs88ygdx/logo_Kduho.svg`
-      "
-      class="w-full h-40 object-contain drop-shadow-2xl drop-shadow-img-product"
-    />
-    <div v-if="isFiftyPercentOff" class="badge">{{ t("50% off") }}</div>
-    <div class="p-4">
-      <div class="flex-col justify-between items-center">
-        <h2 class="text-lg font-semibold mb-3">{{ product.name }}</h2>
-        <div class="flex mb-3 gap-4 justify-between">
-          <span
-            :class="{ 'strikethrough text-gray-500': product.discount }"
-            class="text-lg font"
-          >
-            {{ product.price }} lei
-          </span>
-          <span
-            v-if="product.discount"
-            class="text-lg font-semibold text-red-500"
-          >
-            {{ product.discount }} lei
-          </span>
-        </div>
-      </div>
-      <div class="flex justify-center items-center">
-        <button
-          class="dark:bg-gray-500 bg-gray-600 dark:hover:bg-charade-900 hover:bg-charade-900 py-[2px] text-white text-sm font-semibold px-4 rounded-lg hover:bg-accent-dark flex items-center justify-center content-center w-full"
+    <div class="relative h-40 flex items-center justify-center">
+      <Skeleton v-if="loading" class="h-40 w-full" />
+      <img
+        v-else
+        :alt="product.name"
+        :class="product.image ? '' : '!w-20 m-auto'"
+        :src="
+          product.image
+            ? product.image
+            : `${baseUrl}/download/noco/pm6ki25nwijgjda/m1urcj8gi35hvr3/cvdhh4nrs88ygdx/logo_Kduho.svg`
+        "
+        class="w-full h-40 object-contain drop-shadow-2xl drop-shadow-img-product"
+      />
+    </div>
+    <div v-if="!loading && isFiftyPercentOff" class="badge">
+      {{ t("50% off") }}
+    </div>
+    <div class="space-y-3">
+      <Skeleton v-if="loading" class="h-6 w-3/4" />
+      <h2 v-else class="text-lg font-semibold">{{ product.name }}</h2>
+      <div class="flex justify-between">
+        <Skeleton v-if="loading" class="h-6 w-20" />
+        <Skeleton v-if="loading" class="h-6 w-20" />
+        <span
+          v-else
+          :class="{ 'strikethrough text-gray-500': product.discount }"
+          class="text-lg font"
         >
-          {{ t("buy now") }}
-          <UIcon class="ml-2" name="i-ph:cursor-click" size="30" />
-        </button>
-
-        <UIcon
-          class="ml-2 hover:text-accent cursor-pointer"
-          name="i-ph:shopping-cart"
-          size="35"
-          @click="addToCart(product)"
-        />
+          {{ product.price }} lei
+        </span>
+        <span
+          v-if="!loading && product.discount"
+          class="text-lg font-semibold text-red-500"
+        >
+          {{ product.discount }} lei
+        </span>
+      </div>
+      <div class="flex items-center gap-2">
+        <Skeleton v-if="loading" class="h-10 w-full" />
+        <Skeleton v-if="loading" class="h-10 w-10" />
+        <template v-else>
+          <button
+            class="dark:bg-gray-500 bg-gray-600 dark:hover:bg-charade-900 hover:bg-charade-900 py-[2px] text-white text-sm font-semibold px-4 rounded-lg hover:bg-accent-dark flex items-center justify-center content-center w-full"
+          >
+            {{ t("buy now") }}
+            <UIcon class="ml-2" name="i-ph:cursor-click" size="30" />
+          </button>
+          <UIcon
+            class="ml-2 hover:text-accent"
+            name="i-ph:shopping-cart"
+            size="35"
+            @click.stop="addToCart(product)"
+          />
+        </template>
       </div>
     </div>
   </div>
@@ -55,18 +66,28 @@
 <script setup>
 import { ref, computed } from "vue";
 import { useI18n } from "vue-i18n";
-
 import { useRuntimeConfig } from "#imports";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const { t, locale } = useI18n();
 const props = defineProps({
-  product: Object,
+  product: {
+    type: Object,
+    default: null,
+  },
+  loading: {
+    type: Boolean,
+    default: false,
+  },
 });
+
 const config = useRuntimeConfig();
 const baseUrl = config.public.baseURL;
 let lang = locale.value;
 const product = ref({});
+
 const addToCart = (product) => {};
+
 const setProduct = (p) => {
   product.value = {
     slug: p?.Nume_Produs_RO?.split(" ").join("-"),
@@ -77,21 +98,25 @@ const setProduct = (p) => {
     price: p.Pret_Standard,
   };
 };
+
 const getImage = (obj) => {
   const images = obj ? JSON.parse(obj) : [];
   return images.length > 0 ? `${baseUrl}/${images[0]?.path}` : null;
 };
+
 const productObject = ref(props.product ?? null);
-if (props.product) {
+if (props.product && !props.loading) {
   setProduct(productObject.value);
 }
 
 const isFiftyPercentOff = computed(() => {
+  if (props.loading) return false;
   const originalPrice = parseFloat(product.value.price);
   const discountPrice = parseFloat(product.value.discount);
   return (originalPrice - discountPrice) / originalPrice >= 0.5;
 });
 </script>
+
 <style>
 .strikethrough {
   position: relative;
@@ -110,6 +135,7 @@ const isFiftyPercentOff = computed(() => {
   transform-origin: center;
 }
 </style>
+
 <style scoped>
 .product-card {
   max-width: 100%;

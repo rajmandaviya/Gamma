@@ -9,6 +9,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Skeleton } from "@/components/ui/skeleton";
 import { watchOnce } from "@vueuse/core";
 
 const props = defineProps({
@@ -22,6 +23,7 @@ const emblaThumbnailApi = ref<CarouselApi>();
 const selectedIndex = ref(0);
 
 const image = ref(product?.Imagine_Principala?.[0] || "");
+const imagesLoaded = ref(false);
 
 function onSelect() {
   if (!emblaMainApi.value || !emblaThumbnailApi.value) return;
@@ -58,6 +60,21 @@ watch(
   },
   { deep: true, immediate: true }
 );
+
+function onAllImagesLoaded() {
+  imagesLoaded.value = true;
+}
+
+function checkImagesLoaded() {
+  const images = document.querySelectorAll("img");
+  let loadedCount = 0;
+  images.forEach((img) => {
+    if (img.complete) loadedCount++;
+  });
+  if (loadedCount === images.length) {
+    onAllImagesLoaded();
+  }
+}
 </script>
 
 <template>
@@ -72,14 +89,20 @@ watch(
           <Card
             class="bg-white dark:bg-charade-950 border-gray-200 dark:border-charade-700"
           >
-            <CardContent
-              class="flex aspect-square items-center justify-center p-0"
-            >
-              <img
-                :src="image"
-                alt="Main Product Image"
-                class="h-full w-full object-cover rounded-lg"
-              />
+            <CardContent class="relative aspect-square p-0">
+              <div class="w-full h-full">
+                <Skeleton
+                  v-if="!imagesLoaded"
+                  class="w-full h-full rounded-lg"
+                />
+                <img
+                  :src="image"
+                  alt="Main Product Image"
+                  class="h-full w-full object-cover rounded-lg"
+                  @load="checkImagesLoaded"
+                  :class="{ hidden: !imagesLoaded }"
+                />
+              </div>
             </CardContent>
           </Card>
         </CarouselItem>
@@ -90,14 +113,20 @@ watch(
           <Card
             class="bg-white dark:bg-charade-950 border-gray-200 dark:border-charade-700"
           >
-            <CardContent
-              class="flex aspect-square items-center justify-center p-0"
-            >
-              <img
-                :src="item"
-                alt=""
-                class="h-full w-full object-cover rounded-lg"
-              />
+            <CardContent class="relative aspect-square p-0">
+              <div class="w-full h-full">
+                <Skeleton
+                  v-if="!imagesLoaded"
+                  class="w-full h-full rounded-lg"
+                />
+                <img
+                  :src="item"
+                  alt=""
+                  class="h-full w-full object-cover rounded-lg"
+                  @load="checkImagesLoaded"
+                  :class="{ hidden: !imagesLoaded }"
+                />
+              </div>
             </CardContent>
           </Card>
         </CarouselItem>
@@ -120,14 +149,20 @@ watch(
             <Card
               class="bg-white dark:bg-charade-950 border-gray-200 dark:border-charade-700"
             >
-              <CardContent
-                class="flex aspect-square items-center justify-center p-2"
-              >
-                <img
-                  :src="image"
-                  alt="Main Product Image Thumbnail"
-                  class="h-full w-full object-cover rounded-lg"
-                />
+              <CardContent class="relative aspect-square p-2">
+                <div class="w-full h-full">
+                  <Skeleton
+                    v-if="!imagesLoaded"
+                    class="w-full h-full rounded-lg"
+                  />
+                  <img
+                    :src="image"
+                    alt="Main Product Image Thumbnail"
+                    class="h-full w-full object-cover rounded-lg"
+                    @load="checkImagesLoaded"
+                    :class="{ hidden: !imagesLoaded }"
+                  />
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -146,14 +181,20 @@ watch(
             <Card
               class="bg-white dark:bg-charade-950 border-gray-200 dark:border-charade-700"
             >
-              <CardContent
-                class="flex aspect-square items-center justify-center p-2"
-              >
-                <img
-                  :src="item"
-                  alt=""
-                  class="h-full w-full object-cover rounded-lg"
-                />
+              <CardContent class="relative aspect-square p-2">
+                <div class="w-full h-full">
+                  <Skeleton
+                    v-if="!imagesLoaded"
+                    class="w-full h-full rounded-lg"
+                  />
+                  <img
+                    :src="item"
+                    alt=""
+                    class="h-full w-full object-cover rounded-lg"
+                    @load="checkImagesLoaded"
+                    :class="{ hidden: !imagesLoaded }"
+                  />
+                </div>
               </CardContent>
             </Card>
           </div>

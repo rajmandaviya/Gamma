@@ -23,14 +23,11 @@ async function fetchBanner3() {
     }
   } catch (error) {
     console.error("Error fetching Banner3 data:", error);
-  } finally {
-    loading.value = false;
   }
 }
 
 const fetchDiscountedProducts = async () => {
   try {
-    loading.value = true;
     const res = await axios.get(`/api/discountedProducts`);
     if (res.status === 200) {
       discountedProducts.value = res.data.products;
@@ -38,32 +35,33 @@ const fetchDiscountedProducts = async () => {
     }
   } catch (error) {
     console.error("Error fetching discounted products:", error);
-    loading.value = false;
-  } finally {
-    loading.value = false;
   }
 };
 
 const fetchBestSellingProducts = async () => {
   try {
-    loading.value = true;
     const res = await axios.get(`/api/bestSellingProducts`);
     if (res.status === 200) {
       bestSellingProducts.value = res.data.products;
       key.value += 1;
     }
   } catch (error) {
-    console.error("Error fetching discounted products:", error);
-    loading.value = false;
-  } finally {
-    loading.value = false;
+    console.error("Error fetching best selling products:", error);
   }
 };
 
+const fetchAllData = async () => {
+  loading.value = true;
+  await Promise.all([
+    fetchBanner3(),
+    fetchDiscountedProducts(),
+    fetchBestSellingProducts(),
+  ]);
+  loading.value = false;
+};
+
 onMounted(() => {
-  fetchBanner3();
-  fetchDiscountedProducts();
-  fetchBestSellingProducts();
+  fetchAllData();
 });
 </script>
 
@@ -76,13 +74,26 @@ onMounted(() => {
       </div>
     </div>
     <TopCategory class="self-center" />
-    <DiscoutedProducts :products="discountedProducts" :key="key" />
-    <BestSelling :products="bestSellingProducts" :key="key" class="mt-10" />
+    <DiscoutedProducts
+      :products="discountedProducts"
+      :loading="loading"
+      :key="key"
+    />
+    <BestSelling
+      :products="bestSellingProducts"
+      :loading="loading"
+      :key="key"
+      class="mt-10"
+    />
     <div class="rounded-2xl overflow-hidden mt-10">
+      <Skeleton
+        v-if="loading || !banner3Url"
+        class="h-[200px] w-full md:h-[300px]"
+      />
       <img
+        v-else
         :src="banner3Url"
         alt="Gamma"
-        v-if="banner3Url"
         class="h-[200px] object-cover w-full md:h-[300px]"
       />
     </div>
