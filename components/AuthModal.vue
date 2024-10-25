@@ -27,12 +27,8 @@ const loginPassword = ref("");
 const errorMessage = ref("");
 const successMessage = ref("");
 
-const { data: userData, error: userDataError } = useFetch(
-  () => (loggedIn.value ? "/api/user/profile" : null),
-  {
-    server: false,
-    lazy: true,
-  }
+const { data: userData, error: userDataError } = useFetch(() =>
+  loggedIn.value ? "/api/user/profile" : null
 );
 
 watchEffect(() => {
@@ -204,6 +200,7 @@ console.log(user);
             {{ userInitials }}
           </div>
         </div>
+
         <h2 class="text-center text-base">
           {{ userData?.Nume }} {{ userData?.Prenume }}
         </h2>

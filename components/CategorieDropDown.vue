@@ -12,13 +12,14 @@
 
     <transition name="fade" @before-leave="beforeLeave">
       <div
-        v-if="isDropdownOpen"
+        v-show="isDropdownOpen"
         class="dropdown-menu absolute flex dark:bg-charade-950 bg-white border rounded-b-xl border-accent dark:border-accentz-10 overflow-hidden z-10"
+        :class="{ invisible: !isVisible }"
         :style="{
           width: hoveredCategoryId ? '90vw' : '315px',
           maxWidth: hoveredCategoryId ? '1250px' : '315px',
           height: `${dropdownHeight}px`,
-          opacity: dropdownOpacity,
+          opacity: isVisible ? dropdownOpacity : 0,
         }"
         @mouseleave="hoveredCategoryId = null"
       >
@@ -78,6 +79,7 @@ const { t, locale } = useI18n();
 const localePath = useLocalePath();
 const categories = ref([]);
 const isDropdownOpen = ref(false);
+const isVisible = ref(false);
 const isHomePage = ref(false);
 const dropdownHeight = ref(0);
 const dropdownOpacity = ref(0);
@@ -113,14 +115,11 @@ const calculateDropdownHeight = () => {
 
 const toggleDropdown = () => {
   if (!isHomePage.value) {
-    if (isDropdownOpen.value) {
+    if (isVisible.value) {
+      isVisible.value = false;
       dropdownOpacity.value = 0;
-      setTimeout(() => {
-        dropdownHeight.value = 0;
-        isDropdownOpen.value = false;
-      }, 300);
     } else {
-      isDropdownOpen.value = true;
+      isVisible.value = true;
       nextTick(() => {
         calculateDropdownHeight();
         dropdownOpacity.value = 1;
@@ -153,17 +152,19 @@ watch(locale, (newLocale) => {
 
 onMounted(async () => {
   await fetchCategories();
+  isDropdownOpen.value = true; // Always keep the dropdown in DOM
 
   if (route.path === "/" || route.path === "/ru") {
     isHomePage.value = true;
-    isDropdownOpen.value = true;
+    isVisible.value = true;
     nextTick(() => {
       calculateDropdownHeight();
       dropdownOpacity.value = 1;
     });
   } else {
     isHomePage.value = false;
-    isDropdownOpen.value = false;
+    isVisible.value = false;
+    dropdownOpacity.value = 0;
   }
 });
 
@@ -172,16 +173,15 @@ watch(
   (newPath) => {
     if (newPath === "/" || newPath === "/ru") {
       isHomePage.value = true;
-      isDropdownOpen.value = true;
+      isVisible.value = true;
       nextTick(() => {
         calculateDropdownHeight();
         dropdownOpacity.value = 1;
       });
     } else {
       isHomePage.value = false;
+      isVisible.value = false;
       dropdownOpacity.value = 0;
-      dropdownHeight.value = 0;
-      isDropdownOpen.value = false;
     }
   }
 );
@@ -207,7 +207,7 @@ const createSlug = (category) => {
 
 <style scoped>
 .dropdown-menu {
-  transition: none !important;
+  transition: opacity 0.3s ease-in-out;
 }
 .bg-hovered-category {
   background-color: #f0f0f0;
