@@ -1,15 +1,12 @@
 <template>
-  <!-- Category List (shown when no category is selected) -->
   <div v-if="!selectedCategory">
-    <h2 class="text-2xl font-semibold mb-4">
-    </h2>
+    <h2 class="text-2xl font-semibold mb-4"></h2>
     <ul>
       <li
         v-for="category in categories"
         :key="category.id"
         class="flex gap-2 my-2 justify-between items-center"
       >
-        <!-- Nuxt link to category URL -->
         <nuxt-link
           :to="`${locale === 'ru' ? '/ru' : ''}/categoria/${createSlug(
             category.Nume_Categorie_RO
@@ -20,7 +17,6 @@
           {{ getCategoryName(category) }}
         </nuxt-link>
 
-        <!-- Caret Icon to load subcategories -->
         <UIcon
           name="i-ph:caret-right"
           class="cursor-pointer"
@@ -31,26 +27,21 @@
     </ul>
   </div>
 
-  <!-- Subcategory List (shown when a category is selected) -->
   <div v-else>
-    <!-- Back Button -->
     <button
       @click="goBack"
       class="mb-4 hover:underline flex items-center gap-2"
     >
       <UIcon name="i-ph:caret-left" size="23" />
-      <p class="text-xl">{{ $t('inapoi') }}</p>
+      <p class="text-xl">{{ $t("inapoi") }}</p>
     </button>
 
-    <!-- Subcategories Section -->
     <div class="gap-4 p-2 w-full overflow-y-auto">
-      <!-- Individual Subcategory Blocks -->
       <div
         v-for="subcategory in subcategories"
         :key="subcategory.id"
         class="break-inside-avoid p-3 bg-[#3A3B4A] rounded-lg mb-4"
       >
-        <!-- Subcategory Title -->
         <h3 class="text-xl font-semibold">
           <NuxtLink
             :to="generateSubcategoryLink(subcategory)"
@@ -80,7 +71,6 @@
             />
           </NuxtLink>
         </div>
-        <!-- Subsubcategories List -->
         <ul>
           <li
             v-for="subsub in subcategory.subSubcategories"
@@ -101,44 +91,40 @@
 </template>
 
 <script setup>
+import { ref, reactive } from "vue";
+import { useI18n } from "vue-i18n";
+import slugify from "slugify";
 
-// Categories ref to store fetched data
 const categories = ref([]);
 const subcategories = ref([]);
 const selectedCategory = ref(null);
 const error = ref(null);
 const imageLoaded = reactive({});
 
-// Fetch the categories data from the API
-const { data, pending, error: fetchError } = await useFetch('/api/categories');
+const { data, pending, error: fetchError } = await useFetch("/api/categories");
 
-// Once the data is available, update the categories ref
-if (data.value && data.value.success) {
+if (data.value && data.value.data) {
   categories.value = data.value.data;
 }
 
-// Get locale from vue-i18n
 const { locale } = useI18n();
 
-// Function to get category name based on locale
 const getCategoryName = (category) => {
-  return locale.value === 'ru'
+  return locale.value === "ru"
     ? category.Nume_Categorie_RU
     : category.Nume_Categorie_RO;
 };
 
-// Function to create slug from the category name
 const createSlug = (text) => {
   return slugify(text, {
-    replacement: '-', // Replace spaces with hyphens
-    lower: true, // Convert the text to lowercase
-    strict: true, // Remove special characters
+    replacement: "-",
+    lower: true,
+    strict: true,
   }).toLowerCase();
 };
 
-// Fetch subcategories based on the selected category
 const fetchSubcategories = async (category) => {
-  selectedCategory.value = category; // Set the selected category
+  selectedCategory.value = category;
 
   const { data, error: fetchError } = await useFetch(
     `/api/subCategories?categoryId=${category.id}`
@@ -155,40 +141,46 @@ const fetchSubcategories = async (category) => {
   }
 };
 
-// Go back to the category list
 const goBack = () => {
   selectedCategory.value = null;
 };
 
-// Functions to handle subcategory names and links (same as in your first component)
 const getSubcategoryName = (subcategory) => {
-  return locale.value === 'ru'
-    ? subcategory.subcategory_name_ru || 'Unnamed'
-    : subcategory.subcategory_name_ro || 'Unnamed';
+  return locale.value === "ru"
+    ? subcategory.subcategory_name_ru || "Unnamed"
+    : subcategory.subcategory_name_ro || "Unnamed";
 };
 
 const getSubsubName = (subsub) => {
-  return locale.value === 'ru'
-    ? subsub.subsub_name_ru || 'Unnamed'
-    : subsub.subsub_name_ro || 'Unnamed';
+  return locale.value === "ru"
+    ? subsub.subsub_name_ru || "Unnamed"
+    : subsub.subsub_name_ro || "Unnamed";
 };
 
 const generateSubcategoryLink = (subcategory) => {
-  if (!selectedCategory.value || !subcategory) return ''; // Ensure non-empty values
-  console.log('generateSubcategoryLink');
-  // return `/categoria/${createSlug(
-  //   selectedCategory.value.Nume_Categorie_RO
-  // )}/${createSlug(subcategory.subcategory_name_ro)}_pizdet`;
+  if (!selectedCategory.value || !subcategory) return "";
+  const categorySlug =
+    createSlug(selectedCategory.value.Nume_Categorie_RO) +
+    "_" +
+    selectedCategory.value.id;
+  return `${
+    locale.value === "ru" ? "/ru" : ""
+  }/categoria/${categorySlug}/${createSlug(subcategory.subcategory_name_ro)}_${
+    subcategory.id
+  }`;
 };
 
 const generateSubsubcategoryLink = (subcategory, subsub) => {
-  if (!selectedCategory.value || !subcategory || !subsub) return ''; // Ensure all values exist
-  console.log('generateSubsubcategoryLink');
-  // return `/categoria/${createSlug(
-  //   selectedCategory.value.Nume_Categorie_RO
-  // )}/${createSlug(subcategory.subcategory_name_ro)}/${createSlug(
-  //   subsub.subsub_name_ro
-  // )}_pizdet`;
+  if (!selectedCategory.value || !subcategory || !subsub) return "";
+  const categorySlug =
+    createSlug(selectedCategory.value.Nume_Categorie_RO) +
+    "_" +
+    selectedCategory.value.id;
+  return `${
+    locale.value === "ru" ? "/ru" : ""
+  }/categoria/${categorySlug}/${createSlug(subcategory.subcategory_name_ro)}_${
+    subcategory.id
+  }/${createSlug(subsub.subsub_name_ro)}_${subsub.id}`;
 };
 </script>
 
