@@ -4,10 +4,10 @@
     :class="{ 'hover:border-accent hover:cursor-pointer': !loading }"
     @click="!loading && $router.push(`/produs/${product.slug}_${product.id}`)"
   >
-    <div v-if="!loading && isFiftyPercentOff" class="badge z-20">
-      {{ t("50% off") }}
-    </div>
     <div class="relative h-40 flex items-center justify-center">
+      <div v-if="!loading && isFiftyPercentOff" class="badge z-20">
+        {{ t("50% off") }}
+      </div>
       <Skeleton v-if="loading" class="h-40 w-full" />
       <img
         v-else
@@ -166,8 +166,8 @@ const isFiftyPercentOff = computed(() => {
 
 .badge {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: -10px;
+  right: -20px;
   background-color: #ef4444;
   color: white;
   padding: 5px 10px;

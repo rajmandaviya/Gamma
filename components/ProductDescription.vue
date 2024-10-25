@@ -2,15 +2,17 @@
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { Skeleton } from "@/components/ui/skeleton";
+
 const { locale } = useI18n();
 const { t } = useI18n();
 
 const props = defineProps({
   product: { type: Object, required: true, default: {} },
   productVariant: { required: true },
-  hasNoProducts : {type : Boolean, default: false},
-  hasVariants : {type : Boolean, default: true},
+  hasNoProducts: { type: Boolean, default: false },
+  hasVariants: { type: Boolean, default: true },
 });
+
 const { product, productVariant, hasNoProducts, hasVariants } = props;
 
 const getProductName = () => {
@@ -18,6 +20,7 @@ const getProductName = () => {
     ? product?.Nume_Produs_RU
     : product?.Nume_Produs_RO;
 };
+
 const getProductDesc = () => {
   return locale.value === "ru"
     ? product?.Descriere_Produs_RU
@@ -25,6 +28,16 @@ const getProductDesc = () => {
 };
 
 const variantName = ref(getProductName());
+
+// Fixed discount calculation for when standard price is higher than reduced price
+const getDiscountPercentage = () => {
+  if (!product?.Pret_Standard || !product?.Pret_Redus) return 0;
+
+  const standardPrice = Math.max(product.Pret_Standard, product.Pret_Redus);
+  const reducedPrice = Math.min(product.Pret_Standard, product.Pret_Redus);
+
+  return Math.round(((standardPrice - reducedPrice) / standardPrice) * 100);
+};
 
 watch(
   () => productVariant,
@@ -50,32 +63,27 @@ watch(
     <li class="border-t py-8">
       <p class="text-[#4D4D4D] font-normal text-base">{{ getProductDesc() }}</p>
     </li>
-    <li
-      v-if="product?.Pret_Redus && product?.Pret_Standard > product?.Pret_Redus"
-      class="flex items-center"
-    >
-      <div class="flex items-center mr-10">
+    <li v-if="product?.Pret_Redus" class="flex items-center">
+      <!-- Always show the lower price first, followed by the higher price struck through -->
+      <span class="font-bold"
+        >{{ Math.min(product.Pret_Redus, product.Pret_Standard) }} Lei</span
+      >
+      <s class="ml-5 text-gray-500"
+        >{{ Math.max(product.Pret_Redus, product.Pret_Standard) }} Lei</s
+      >
+      <div class="flex items-center ml-10">
+        <span class="text-red-500 mr-2 text-xl">
+          {{ getDiscountPercentage() }}%
+        </span>
         <UIcon
           name="i-ph:seal-percent-fill"
           class="w-8 h-8 mr-2 text-red-500"
         />
-
-        <span class="text-red-500 mr-2 text-xl">
-          -
-          {{
-            (
-              ((product?.Pret_Standard - product?.Pret_Redus) /
-                product?.Pret_Standard) *
-              100
-            ).toFixed(2)
-          }}
-        </span>
       </div>
-      <span class="font-bold"> {{ product?.Pret_Redus }} Lei </span>
-      <s class="ml-5 text-gray-500">{{ product?.Pret_Standard }} Lei</s>
     </li>
     <li v-else class="font-bold">{{ product?.Pret_Standard }} Lei</li>
     <slot></slot>
+
     <li class="border-t w-full pt-8">
       <div class="flex justify-center items-center">
         <button
